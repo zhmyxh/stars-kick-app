@@ -1,0 +1,171 @@
+/* ------ play ------ */
+
+#play-game-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: url('../assets/images/bj-pattern.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    transition: 0.2s;
+}
+
+#play-game-settings,
+#play-game-pre-start,
+#play-bj-status {
+    width: 330px;
+}
+
+#play-game-pre-start {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 20px;
+    border-radius: 15px;
+    height: 130px;
+}
+
+#play-game-settings {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.play-game-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 14px;
+    border-radius: 30px;
+}
+
+.play-game-status span {
+    font-size: 12px;
+}
+
+#play-game-pre-start,
+.play-game-status {
+    backdrop-filter: blur(5px);
+    background: rgba(0, 0, 0, 0.433);
+    box-sizing: border-box;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+#play-bj-status {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+#play-game-options {
+    padding-inline: 15px;
+    padding-block: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.play-box {
+    display: flex;
+    flex-direction: column;
+}
+
+.play-header-box {
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+    gap: 5px;
+}
+
+.play-select-box {
+    display: flex;
+    gap: 10px;
+    height: 50px;
+    padding: 5px;
+    border-radius: 15px;
+    background-color: var(--hover-back);
+}
+
+.play-select,
+.play-mod {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    user-select: none;
+    border-radius: 10px;
+    padding: 8px 10px;
+    font-weight: 600;
+    box-sizing: border-box;
+}
+
+.play-select:hover,
+.play-mod:hover,
+.play-select:active,
+.play-mod:active {
+    background-color: var(--hover-back);
+}
+
+.play-select-box .selected {
+    background-color: var(--active-back);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+#play-select-game {
+    display: flex;
+    width: 100%;
+    gap: 10px;
+}
+
+#play-select-game button {
+    width: 100%;
+}
+
+#play-type-select {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+}
+
+#play-game {
+    padding-inline: 15px;
+    padding-block: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#play-game-control {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+}
+
+#play-game-control button {
+    width: 48%;
+}
+
+#play-game-result {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}

@@ -1,0 +1,584 @@
+/* ------ font ------ */
+
+@font-face {
+    font-family: Inter;
+    src: url('../assets/fonts/Inter-VariableFont_opsz\,wght.ttf');
+}
+
+/* ------ roots ------ */
+
+:root {
+    --default-text: rgb(49, 49, 49);
+    --secondary-text: rgb(111, 111, 111);
+
+    --default-button: rgb(218, 218, 218);
+    
+    --default-back: rgb(234, 234, 234);
+    --hover-back: rgb(225, 225, 225);
+    --active-back: rgb(255, 255, 255);
+    
+    --default-border: rgba(0, 0, 0, 0.068);
+
+    --default-icon: rgb(99, 99, 99);
+    --invert-icon: rgb(255, 255, 255);
+
+    --green: rgb(0, 135, 0);
+    --blue: rgb(39, 135, 203);
+
+    --app-color: white;
+}
+
+:root[data-theme="dark"] {
+    --default-text: rgb(230, 230, 230);
+    --secondary-text: rgb(160, 160, 160);
+
+    --default-button: rgb(37, 37, 37);
+
+    --default-back: rgb(24, 24, 24);
+    --hover-back: rgb(31, 31, 31);
+    --active-back: rgb(48, 48, 48);
+    --default-border: rgba(255, 255, 255, 0.08);
+
+    --default-icon: rgb(170, 170, 170);
+    --invert-icon: rgb(255, 255, 255);
+
+    --green: rgb(0, 135, 0);
+    --blue: rgb(39, 135, 203);
+
+    --app-color: rgb(17, 17, 17);
+}
+
+/* ------ body ------ */
+
+body {
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    background-color: var(--app-color);
+}
+
+div, span, .navigation-button {
+    transition: 0.3s;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+#root {
+    width: 100%;
+    height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#app {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 450px;
+    height: 100%;
+    background-color: var(--app-color);
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+#content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll;
+    box-sizing: border-box;
+}
+
+.app-page {
+    display: flex;
+    flex-direction: column;
+}
+
+#page-loader {
+    position: relative;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    min-height: 100px;
+    box-sizing: border-box;
+}
+
+/* ------ text ------ */
+
+span {
+    font-family: Inter;
+    line-height: 1.3em;
+}
+
+.header-text {
+    color: var(--default-text);
+    font-weight: 500;
+    font-size: 18px;
+}
+
+.default-text {
+    color: var(--default-text);
+}
+
+.secondary-text {
+    color: var(--secondary-text);
+    font-size: 14px;
+}
+
+ol {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding-left: 35px;
+    margin-block: 10px;
+}
+
+a {
+    font-family: Inter;
+    display: inline-block;
+    text-decoration: none;
+    color: rgb(41, 138, 218);
+    font-weight: 500;
+}
+
+p {
+    margin-block: 5px;
+}
+
+/* ------ buttons ------ */
+
+.button-main {
+    background-color: var(--default-button);
+    font-size: 16px;
+    color: var(--default-text);
+}
+
+.button-secondary {
+    background: none;
+    font-size: 14px;
+    color: var(--secondary-text);
+}
+
+button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border: none;
+    outline: none;
+    font-family: Inter;
+    padding-inline: 12px;
+    height: 46px;
+    cursor: pointer;
+    user-select: none;
+    font-weight: 500;
+    border-radius: 10px;
+    transition: 0.1s;
+}
+
+button:active {
+    opacity: 0.8;
+    transform: scale(0.95);
+}
+
+.b-g {
+    color: white;
+    background-color: rgb(0, 135, 0);
+}
+
+.b-b {
+    color: white;
+    background-color: rgb(39, 135, 203);
+}
+
+.text-white {
+    color: white;
+}
+
+.button-i {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    gap: 10px;
+    padding: 0;
+    border: none;
+    outline: none;
+    width: fit-content;
+    height: fit-content;
+    cursor: pointer;
+    border-radius: 30px;
+}
+
+.button-i:active {
+    opacity: 0.8;
+}
+
+/* ------ utility ------ */
+
+img {
+    pointer-events: none;
+    user-select: none;
+    cursor: default;
+}
+
+/* .line {
+    border-top: 1px solid var(--default-border);
+    width: 100%;
+    box-sizing: border-box;
+} */
+
+.header {
+    display: flex;
+    padding: 15px;
+}
+
+.error-message {
+    width: 100%;
+    height: 70px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+}
+
+.box {
+    padding: 18px;
+    gap: 12px;
+    border-radius: 15px;
+    background-color: var(--default-back);
+}
+
+.score {
+    display: flex;
+    align-items: center;
+    width: fit-content;
+    gap: 7px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    background-color: var(--hover-back);
+}
+
+#dark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(2px);
+    z-index: 10;
+}
+
+#modal {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 320px;
+}
+
+#modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#modal-content {
+    display: flex;
+    flex-direction: column;
+    min-height: 230px;
+    max-height: 590px;
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+.select-wrapper {
+    position: relative;
+}
+
+.select-wrapper select {
+    width: 100%;
+    padding: 12px 40px 12px 14px;
+    border-radius: 12px;
+    border: 1px solid var(--default-border);
+    background-color: var(--default-back);
+    color: var(--default-text);
+    font-size: 14px;
+    cursor: pointer;
+    appearance: none;
+    outline: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    transition: border 0.2s ease, background-color 0.2s ease;
+}
+
+.select-wrapper select:hover {
+    background-color: var(--hover-back);
+}
+
+.select-wrapper::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 14px;
+    width: 8px;
+    height: 8px;
+    border-right: 2px solid var(--secondary-text);
+    border-bottom: 2px solid var(--secondary-text);
+    transform: translateY(-50%) rotate(45deg);
+    pointer-events: none;
+}
+
+.select-wrapper select option {
+    background-color: var(--default-back);
+    color: var(--default-text);
+    font-size: 14px;
+}
+
+.select-wrapper select option:checked {
+    background-color: var(--hover-back);
+    color: var(--default-text);
+}
+
+.loader {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    color: var(--default-icon);
+    width: 3px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    box-shadow: 12px 0 0 4px,
+                24px 0 0 2px,
+                36px 0 0 0;
+
+    transform: translate(-22px, -50%);
+    animation: l21 .5s infinite alternate linear;
+}
+
+@keyframes l21 {
+    50%  { box-shadow: 12px 0 0 2px,
+                       24px 0 0 4px,
+                       36px 0 0 2px; }
+
+    100% { box-shadow: 12px 0 0 0,
+                       24px 0 0 2px,
+                       36px 0 0 4px; }
+}
+
+.dots {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    background: #555;
+    border-radius: 50%;
+    opacity: 0.5;
+    transition: all 0.3s ease;
+}
+
+.dot.active {
+    width: 24px;
+    border-radius: 20px;
+    background: rgb(0, 135, 0);
+    opacity: 1;
+}
+
+/* ------ icons ------ */
+
+.icon-default {
+  color: var(--default-icon);
+}
+
+.icon-default path,
+.icon-default circle,
+.icon-default ellipse {
+  fill: currentColor;
+}
+
+.icon-invert {
+    color: var(--invert-icon);
+}
+
+.icon-invert path,
+.icon-invert circle,
+.icon-invert ellipse {
+  fill: var(--invert-icon);
+}
+
+/* ------ scroll ------ */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #888 var(--default-back);
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 8px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: #666;
+}
+
+/* ------ switch ------ */
+
+.switch {
+  position: relative;
+  display: inline-block;
+  user-select: none;
+  width: 44px;
+  height: 26px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
+  background-color: #3a3a3a;
+  border-radius: 999px;
+  transition: background-color 0.25s ease;
+}
+
+.slider::before {
+  content: "";
+  position: absolute;
+  height: 18px;
+  width: 18px;
+  left: 4px;
+  top: 4px;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 0.25s ease, background-color 0.25s ease;
+}
+
+.switch input:checked + .slider {
+  background-color: #4f8cff;
+}
+
+.switch input:checked + .slider::before {
+  transform: translateX(18px);
+}
+
+.switch input:focus-visible + .slider {
+  outline: 2px solid #4f8cff;
+  outline-offset: 2px;
+}
+
+/* ------ navigation ------ */
+
+#navigation {
+    display: flex;
+    box-sizing: border-box;
+    padding: 10px;
+    gap: 5px;
+    background-color: var(--default-back);
+    z-index: 1;
+}
+
+.navigation-button {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+    overflow: hidden;
+    border-radius: 10px;
+    padding: 8px 10px;
+    gap: 5px;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.navigation-button:hover,
+.navigation-button:active {
+    background-color: var(--hover-back);
+}
+
+@keyframes selected {
+    from {width: 0;}
+    to {width: 50px;}
+}
+
+.selected {
+    background-color: var(--hover-back);
+}
+
+.selected::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    display: flex;
+    transform: translate(-50%);
+    width: 50px;
+    height: 3px;
+    border-radius: 10px;
+    background-color: var(--default-icon);
+    animation: selected 0.1s;
+}
+
+.navigation-button span {
+    font-size: 14px;
+    font-weight: 500;
+    opacity: 0.6;
+}
+
+/* ------ deposit ------ */
+
+#panel {
+    display: flex;
+    box-sizing: border-box;
+    height: fit-content;
+    justify-content: space-between;
+    padding: 10px 14px 10px 10px;
+    gap: 10px;
+    background-color: var(--default-back);
+    z-index: 1;
+}
+
+#panel-current {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    gap: 5px;
+}
+
+#panel-current span {
+    font-weight: 700;
+}

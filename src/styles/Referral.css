@@ -1,0 +1,42 @@
+#referral {
+    gap: 10px;
+    padding-inline: 15px;
+    padding-block: 20px;
+}
+
+.referral-box {
+    padding: 18px;
+    gap: 10px;
+    border-radius: 15px;
+    background-color: var(--default-back);
+}
+
+#referral-title {
+    display: flex;
+    flex-direction: column;
+}
+
+#referral-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#referral-info {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+#referral-number,
+#referral-earn {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#referral-balance {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}

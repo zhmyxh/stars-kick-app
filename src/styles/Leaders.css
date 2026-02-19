@@ -1,0 +1,10 @@
+#leaders {
+    padding-inline: 15px;
+    padding-block: 20px;
+}
+
+#leaders-list {
+    display: flex;
+    flex-direction: column;
+    height: 120px;
+}
