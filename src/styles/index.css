@@ -7,49 +7,53 @@
 
 /* ------ roots ------ */
 
-:root {
+:root[data-theme="light"] {
+    --app-color: rgb(244, 244, 244);
+
     --default-text: rgb(49, 49, 49);
     --secondary-text: rgb(111, 111, 111);
 
     --default-button: rgb(218, 218, 218);
+    --hover-back: rgb(225, 225, 225);
+    --active-back: rgb(213, 213, 213);
     
     --default-back: rgb(234, 234, 234);
     --default-back-transparent: rgba(234, 234, 234, 0.8);
-
-    --hover-back: rgb(225, 225, 225);
-    --active-back: rgb(255, 255, 255);
     
     --default-border: rgba(0, 0, 0, 0.068);
 
     --default-icon: rgb(99, 99, 99);
     --invert-icon: rgb(255, 255, 255);
 
-    --green: rgb(0, 135, 0);
+    --green: rgb(0, 120, 0);
+    --green-back: rgba(0, 120, 0, 0.45);
+    --green-border: rgba(0, 120, 0, 0.28);
     --blue: rgb(39, 135, 203);
-
-    --app-color: white;
+    --blue-back: rgba(39, 135, 203, 0.463);
 }
 
 :root[data-theme="dark"] {
-    --default-text: rgb(230, 230, 230);
-    --secondary-text: rgb(160, 160, 160);
+    --app-color: rgb(20, 20, 20);
+
+    --default-text: rgb(237, 237, 237);
+    --secondary-text: rgb(134, 134, 134);
 
     --default-button: rgb(37, 37, 37);
+    --hover-back: rgb(31, 31, 31);
+    --active-back: rgb(42, 42, 42);
 
-    --default-back: rgb(24, 24, 24);
+    --default-back: rgb(27, 27, 27);
     --default-back-transparent: rgba(24, 24, 24, 0.8);
     
-    --hover-back: rgb(31, 31, 31);
-    --active-back: rgb(48, 48, 48);
     --default-border: rgba(255, 255, 255, 0.08);
 
     --default-icon: rgb(170, 170, 170);
     --invert-icon: rgb(255, 255, 255);
 
     --green: rgb(0, 135, 0);
+    --green-back: rgba(0, 135, 0, 0.163);
     --blue: rgb(39, 135, 203);
-
-    --app-color: rgb(17, 17, 17);
+    --blue-back: rgba(39, 135, 203, 0.163);
 }
 
 /* ------ body ------ */
@@ -59,6 +63,7 @@ body {
     margin: 0;
     overflow: hidden;
     background-color: var(--app-color);
+    user-select: none;
 }
 
 div, span, .navigation-button {
@@ -93,7 +98,6 @@ div, span, .navigation-button {
 #content {
     display: flex;
     flex-direction: column;
-    padding-block: 85px;
     width: 100%;
     height: 100%;
     overflow-y: scroll;
@@ -134,6 +138,10 @@ span {
 .secondary-text {
     color: var(--secondary-text);
     font-size: 14px;
+}
+
+.white-text {
+    color: white;
 }
 
 ol {
@@ -210,9 +218,9 @@ button:active {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: none;
+    background-color: var(--active-back);
     gap: 10px;
-    padding: 12px;
+    padding: 6px;
     border: none;
     outline: none;
     width: fit-content;
@@ -222,8 +230,8 @@ button:active {
 }
 
 .button-i:active {
-    background-color: var(--hover-back);
     opacity: 0.8;
+    transform: scale(0.95);
 }
 
 /* ------ utility ------ */
@@ -267,9 +275,6 @@ img {
     align-items: center;
     width: fit-content;
     gap: 7px;
-    /* padding: 10px 14px;
-    border-radius: 10px;
-    background-color: var(--hover-back); */
 }
 
 #dark {
@@ -280,7 +285,7 @@ img {
     height: 100%;
     box-sizing: border-box;
     display: flex;
-    align-items: center;
+    align-items: end;
     justify-content: center;
     background: rgba(0, 0, 0, 0.3);
     backdrop-filter: blur(2px);
@@ -290,29 +295,29 @@ img {
 #modal {
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    width: 350px;
-    gap: 12px;
-    border-radius: 15px;
+    width: 100%;
+    border-radius: 15px 15px 0 0;
     background-color: var(--default-back);
     backdrop-filter: blur(10px);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.364);
+    overflow: hidden;
+    transition: 0.3s;
 }
 
 #modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-block: 10px;
-    padding-left: 20px;
-    padding-right: 10px;
+    padding: 18px;
 }
 
 #modal-content {
     display: flex;
     flex-direction: column;
     min-height: 230px;
-    max-height: 460px;
-    padding: 18px;
+    padding-top: 0;
+    padding-inline: 18px;
+    padding-bottom: 18px;
     overflow-y: auto;
     box-sizing: border-box;
 }
@@ -531,22 +536,18 @@ img {
 
 #navigation,
 #panel {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 87%;
-    border-radius: 50px;
-    border: 1px solid var(--default-border);
+    width: 100%;
     box-sizing: border-box;
+    background-color: var(--default-back);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.203);
 }
 
 #navigation {
+    border-radius: 15px 15px 0 0;
     display: flex;
-    bottom: 10px;
+    bottom: 0;
     padding: 10px;
     gap: 5px;
-    background-color: var(--default-back-transparent);
-    backdrop-filter: blur(5px);
     z-index: 3;
 }
 
@@ -559,7 +560,7 @@ img {
     cursor: pointer;
     user-select: none;
     overflow: hidden;
-    border-radius: 30px;
+    border-radius: 10px;
     padding: 8px 10px;
     gap: 5px;
     width: 100%;
@@ -568,7 +569,7 @@ img {
 }
 
 .navigation-button:active {
-    background-color: var(--hover-back);
+    background-color: var(--active-back);
 }
 
 @keyframes selected {
@@ -577,7 +578,7 @@ img {
 }
 
 .selected {
-    background-color: var(--hover-back);
+    background-color: var(--active-back);
 }
 
 .selected::after {
@@ -600,15 +601,14 @@ img {
 }
 
 #panel {
-    top: 10px;
+    border-radius: 0 0 15px 15px;
+    top: 0;
     display: flex;
     height: fit-content;
     justify-content: space-between;
     padding-block: 10px;
-    padding-inline: 12px;
+    padding-inline: 14px 22px;
     gap: 10px;
-    background-color: var(--default-back-transparent);
-    backdrop-filter: blur(5px);
     z-index: 3;
 }
 

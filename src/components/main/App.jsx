@@ -5,7 +5,7 @@ import Navigation from "../utility/Navigation"
 
 import { Suspense, lazy } from "react";
 
-const GamesPage = lazy(() => import("../pages/Games"))
+const ActivityPage = lazy(() => import("../pages/Activity"))
 const PlayPage = lazy(() => import("../pages/Play"))
 const ReferralPage = lazy(() => import("../pages/Referral"))
 const LeadersPage = lazy(() => import("../pages/Leaders"))
@@ -74,7 +74,7 @@ function App() {
             <Panel />
             <div id="content">
                 <Suspense fallback={<PageLoader />}>
-                    {currentPage === 'games-page' && <GamesPage />}
+                    {currentPage === 'activity-page' && <ActivityPage />}
                     {currentPage === 'play-page' && <PlayPage />}
                     {currentPage === 'referral-page' && <ReferralPage />}
                     {currentPage === 'leaders-page' && <LeadersPage />}

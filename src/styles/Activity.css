@@ -1,0 +1,30 @@
+#activities {
+    padding-inline: 15px;
+    padding-block: 20px;
+}
+
+#activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.activity-box {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    justify-content: center;
+}
+
+.activity-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.activity-banner {
+    width: 170px;
+}

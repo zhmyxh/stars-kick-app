@@ -1,0 +1,43 @@
+#deposit,
+#withdraw {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+#deposit-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.deposit-pack {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    padding-left: 18px;
+    height: 40px;
+    gap: 12px;
+    border-radius: 15px;
+    background-color: var(--hover-back);
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.pack-selected {
+    background-color: var(--active-back);
+    transform: translateY(-5px);
+}
+
+.deposit-ad {
+    position: absolute;
+    top: -29px;
+    left: 50%;
+    transform: translate(-50%);
+    width: 80%;
+    background-color: var(--green);
+    padding: 5px 10px;
+    border-radius: 10px 10px 0 0;
+}

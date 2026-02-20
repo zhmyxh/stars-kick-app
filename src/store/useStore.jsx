@@ -112,6 +112,13 @@ export const useContentStore = create((set, get) => ({
     ],
 
     // deposit
+    depositPack: [
+        { amount: 25, type: 'deposit' },
+        { amount: 50, type: 'deposit' },
+        { amount: 75, type: 'deposit' },
+        { amount: 100, type: 'deposit' }
+    ],
+
     giftsDeposit: [
         { name: 'diamond-gift', icon: 'diamond-gift', price: 85 },
         { name: 'trophy-gift', icon: 'trophy-gift', price: 85 },

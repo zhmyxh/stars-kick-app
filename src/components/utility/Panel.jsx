@@ -21,15 +21,10 @@ function Panel() {
 
     return (
         <div id="panel">
-            <div style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
-                <button className='button-i' onClick={() => toggleModal('deposit')}>
-                    <IconDeposit className='icon-default' width={22} height={22} />
-                </button>
-                <button className='button-i' onClick={() => toggleModal('settings')}>
-                    <IconSettings className='icon-default' width={22} height={22} />
-                </button>
-            </div>
-
+            <button className="button-main b-g" onClick={() => toggleModal('deposit')}>
+                <IconDeposit className='icon-invert' width={20} height={20} />
+                <span className="white-text">{t('button.deposit')}</span>
+            </button>
             <Score value={balance} />
         </div>
     )

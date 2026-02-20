@@ -31,13 +31,6 @@
 
 /* deposit & withdraw */
 
-#deposit,
-#withdraw {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
 #gift-list {
     display: flex;
     flex-direction: column;

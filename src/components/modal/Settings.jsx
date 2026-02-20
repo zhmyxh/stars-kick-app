@@ -52,7 +52,7 @@ function Settings() {
                     </select>
                 </div>
             </div>
-            <div className="line" style={{ marginBlock: 10 }}></div>
+            <div className="line"></div>
             <div id="settings-app-info">
                 <span className="secondary-text">{t("header.appversion")}: <b>{version}</b></span>
                 <span className="secondary-text" style={{ fontWeight: 500 }}>© Copyright, 2026</span>
