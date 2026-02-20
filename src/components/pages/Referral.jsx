@@ -21,7 +21,7 @@ function ReferralPage() {
     const handleCopyLink = async () => {
         if (linkCopy) return
 
-        const link = referralLink + user.id // REF LINK!!!
+        const link = referralLink + user.user_tg_id // REF LINK!!!
         try {
             await navigator.clipboard.writeText(link)
             setLinkCopy(true)

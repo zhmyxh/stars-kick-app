@@ -8,9 +8,9 @@ function Modal({ header, children }) {
     const { toggleModal } = useSettingsStore()
 
     return (
-        <div id="modal" className="box">
+        <div id="modal">
             <div id="modal-header">
-                <span className="default-text" style={{ fontWeight: 500 }}>{header}</span>
+                <span className="default-text" style={{ fontWeight: 500, fontSize: 20 }}>{header}</span>
                 <button className="button-i" onClick={toggleModal}>
                     <IconClose className='icon-default' width={24} height={24} />
                 </button>

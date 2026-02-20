@@ -14,6 +14,8 @@
     --default-button: rgb(218, 218, 218);
     
     --default-back: rgb(234, 234, 234);
+    --default-back-transparent: rgba(234, 234, 234, 0.8);
+
     --hover-back: rgb(225, 225, 225);
     --active-back: rgb(255, 255, 255);
     
@@ -35,6 +37,8 @@
     --default-button: rgb(37, 37, 37);
 
     --default-back: rgb(24, 24, 24);
+    --default-back-transparent: rgba(24, 24, 24, 0.8);
+    
     --hover-back: rgb(31, 31, 31);
     --active-back: rgb(48, 48, 48);
     --default-border: rgba(255, 255, 255, 0.08);
@@ -79,6 +83,7 @@ div, span, .navigation-button {
     flex-direction: column;
     width: 100%;
     max-width: 450px;
+    max-height: 750px;
     height: 100%;
     background-color: var(--app-color);
     box-sizing: border-box;
@@ -88,6 +93,7 @@ div, span, .navigation-button {
 #content {
     display: flex;
     flex-direction: column;
+    padding-block: 85px;
     width: 100%;
     height: 100%;
     overflow-y: scroll;
@@ -206,7 +212,7 @@ button:active {
     justify-content: center;
     background: none;
     gap: 10px;
-    padding: 0;
+    padding: 12px;
     border: none;
     outline: none;
     width: fit-content;
@@ -216,6 +222,7 @@ button:active {
 }
 
 .button-i:active {
+    background-color: var(--hover-back);
     opacity: 0.8;
 }
 
@@ -260,9 +267,9 @@ img {
     align-items: center;
     width: fit-content;
     gap: 7px;
-    padding: 10px 14px;
+    /* padding: 10px 14px;
     border-radius: 10px;
-    background-color: var(--hover-back);
+    background-color: var(--hover-back); */
 }
 
 #dark {
@@ -284,13 +291,20 @@ img {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    width: 320px;
+    width: 350px;
+    gap: 12px;
+    border-radius: 15px;
+    background-color: var(--default-back);
+    backdrop-filter: blur(10px);
 }
 
 #modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding-block: 10px;
+    padding-left: 20px;
+    padding-right: 10px;
 }
 
 #modal-content {
@@ -298,6 +312,7 @@ img {
     flex-direction: column;
     min-height: 230px;
     max-height: 460px;
+    padding: 18px;
     overflow-y: auto;
     box-sizing: border-box;
 }
@@ -426,7 +441,7 @@ img {
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: #888 var(--default-back);
+  scrollbar-color: #888 transparent;
 }
 
 *::-webkit-scrollbar {
@@ -438,13 +453,28 @@ img {
   background: transparent;
 }
 
+*::-webkit-scrollbar-track-piece {
+  background: transparent;
+}
+
 *::-webkit-scrollbar-thumb {
   background-color: #888;
   border-radius: 8px;
+  border: none;
 }
 
 *::-webkit-scrollbar-thumb:hover {
   background-color: #666;
+}
+
+*::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+*::-webkit-scrollbar-corner {
+  background: transparent;
 }
 
 /* ------ switch ------ */
@@ -499,13 +529,25 @@ img {
 
 /* ------ navigation ------ */
 
+#navigation,
+#panel {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 87%;
+    border-radius: 50px;
+    border: 1px solid var(--default-border);
+    box-sizing: border-box;
+}
+
 #navigation {
     display: flex;
-    box-sizing: border-box;
+    bottom: 10px;
     padding: 10px;
     gap: 5px;
-    background-color: var(--default-back);
-    z-index: 1;
+    background-color: var(--default-back-transparent);
+    backdrop-filter: blur(5px);
+    z-index: 3;
 }
 
 .navigation-button {
@@ -517,7 +559,7 @@ img {
     cursor: pointer;
     user-select: none;
     overflow: hidden;
-    border-radius: 10px;
+    border-radius: 30px;
     padding: 8px 10px;
     gap: 5px;
     width: 100%;
@@ -525,7 +567,6 @@ img {
     box-sizing: border-box;
 }
 
-.navigation-button:hover,
 .navigation-button:active {
     background-color: var(--hover-back);
 }
@@ -548,7 +589,6 @@ img {
     transform: translate(-50%);
     width: 50px;
     height: 3px;
-    border-radius: 10px;
     background-color: var(--default-icon);
     animation: selected 0.1s;
 }
@@ -559,17 +599,17 @@ img {
     opacity: 0.6;
 }
 
-/* ------ deposit ------ */
-
 #panel {
+    top: 10px;
     display: flex;
-    box-sizing: border-box;
     height: fit-content;
     justify-content: space-between;
-    padding: 10px 14px 10px 10px;
+    padding-block: 10px;
+    padding-inline: 12px;
     gap: 10px;
-    background-color: var(--default-back);
-    z-index: 1;
+    background-color: var(--default-back-transparent);
+    backdrop-filter: blur(5px);
+    z-index: 3;
 }
 
 #panel-current {

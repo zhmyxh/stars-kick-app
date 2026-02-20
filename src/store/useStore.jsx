@@ -59,7 +59,7 @@ export const useSettingsStore = create((set, get) => ({
     },
 
     // page routing
-    currentPage: 'play-page',
+    currentPage: 'profile-page',
     setPage: (page) => set({
         currentPage: page
     }),
@@ -105,6 +105,12 @@ export const useUserStore = create((set, get) => ({
 }))
 
 export const useContentStore = create((set, get) => ({
+    // activities
+    activities: [
+        { name: 'blackjack', icon: 'activity-blackjack', link: 'play-page' },
+        { name: 'events', icon: 'activity-events', link: 'events-page' }
+    ],
+
     // deposit
     giftsDeposit: [
         { name: 'diamond-gift', icon: 'diamond-gift', price: 85 },

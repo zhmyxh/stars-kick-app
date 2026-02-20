@@ -1,0 +1,10 @@
+#games {
+    padding-inline: 15px;
+    padding-block: 20px;
+}
+
+#games-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}

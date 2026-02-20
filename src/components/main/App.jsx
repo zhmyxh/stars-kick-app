@@ -38,8 +38,13 @@ function App() {
 
         // demo login
         loginUser({
-            id: 0,
-            username: 'Egor',
+            user_tg_id: 0,
+            username: 'zhmyxh',
+            full_name: 'Egor Sokolov',
+            joined_at: '952330952031',
+            language_code: 'en',
+            is_bot_blocked: false,
+            ad_id: 0,
             image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIf4R5qPKHPNMyAqV-FjS_OTBB8pfUV29Phg&s'
         })
     }, [])

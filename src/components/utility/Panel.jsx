@@ -3,6 +3,7 @@ import IconDeposit from '../../assets/icons/icon-deposit.svg?react'
 
 import IconLight from '../../assets/icons/themes-icons/icon-light-theme.svg?react'
 import IconDark from '../../assets/icons/themes-icons/icon-dark-theme.svg?react'
+import IconSettings from '../../assets/icons/tech-icons/icon-settings.svg?react'
 import { useSettingsStore, useUserStore } from '../../store/useStore'
 import { useEffect } from 'react'
 import Score from './Score'
@@ -20,10 +21,15 @@ function Panel() {
 
     return (
         <div id="panel">
-            <button className='b-g' onClick={() => toggleModal('deposit')}>
-                <IconDeposit className='icon-invert' width={22} height={22} />
-                <span className="white-text">{t('button.deposit')}</span>
-            </button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
+                <button className='button-i' onClick={() => toggleModal('deposit')}>
+                    <IconDeposit className='icon-default' width={22} height={22} />
+                </button>
+                <button className='button-i' onClick={() => toggleModal('settings')}>
+                    <IconSettings className='icon-default' width={22} height={22} />
+                </button>
+            </div>
+
             <Score value={balance} />
         </div>
     )
