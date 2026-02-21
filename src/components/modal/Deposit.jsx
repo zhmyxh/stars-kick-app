@@ -1,7 +1,7 @@
 import '../../styles/DepWith.css'
 
 import React, { useState } from 'react'
-import { useContentStore } from '../../store/useStore'
+import { useContentStore, useUserStore } from '../../store/useStore'
 import Score from '../utility/Score'
 import { Trans, useTranslation } from 'react-i18next'
 
@@ -10,6 +10,7 @@ function Deposit() {
     const { t } = useTranslation()
     const [amount, setAmount] = useState(0)
     const [selected, setSelected] = useState('')
+    const { balance } = useUserStore()
 
     const handleSelectPack = (pack, id) => {
         setSelected(id)
@@ -40,10 +41,17 @@ function Deposit() {
                     )
                 })}
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-                <span className='secondary-text'>You will buy</span>
-                <Score value={amount} />
+            <div id='deposit-amount'>
+                <div className='deposit-balance'>
+                    <span className='secondary-text'>You will buy</span>
+                    <Score value={amount} />
+                </div>
+                <div className='deposit-balance'>
+                    <span className='secondary-text'>Your current balance</span>
+                    <Score value={balance} />
+                </div>
             </div>
+
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 <button className='button-main b-g' style={{ width: '100%' }}>
                     <span className="white-text">{t('button.buy')}</span>

@@ -23,7 +23,7 @@
     border-radius: 15px;
     background-color: var(--hover-back);
     cursor: pointer;
-    transition: 0.2s;
+    transition: 0.1s;
 }
 
 .pack-selected {
@@ -40,4 +40,19 @@
     background-color: var(--green);
     padding: 5px 10px;
     border-radius: 10px 10px 0 0;
+}
+
+#deposit-amount {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.deposit-balance {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 18px;
+    border-radius: 15px;
+    background-color: var(--hover-back);
 }

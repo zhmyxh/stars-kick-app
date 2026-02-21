@@ -1,8 +1,13 @@
 /* ------ font ------ */
 
-@font-face {
+/* @font-face {
     font-family: Inter;
     src: url('../assets/fonts/Inter-VariableFont_opsz\,wght.ttf');
+} */
+
+@font-face {
+    font-family: Geologica;
+    src: url('../assets/fonts/Geologica-VariableFont_CRSV\,SHRP\,slnt\,wght.ttf');
 }
 
 /* ------ roots ------ */
@@ -121,7 +126,7 @@ div, span, .navigation-button {
 /* ------ text ------ */
 
 span {
-    font-family: Inter;
+    font-family: Geologica;
     line-height: 1.3em;
 }
 
@@ -153,7 +158,7 @@ ol {
 }
 
 a {
-    font-family: Inter;
+    font-family: Geologica;
     display: inline-block;
     text-decoration: none;
     color: rgb(41, 138, 218);
@@ -185,7 +190,7 @@ button {
     gap: 10px;
     border: none;
     outline: none;
-    font-family: Inter;
+    font-family: Geologica;
     padding-inline: 12px;
     height: 46px;
     cursor: pointer;
@@ -318,7 +323,6 @@ img {
     padding-top: 0;
     padding-inline: 18px;
     padding-bottom: 18px;
-    overflow-y: auto;
     box-sizing: border-box;
 }
 
@@ -333,7 +337,7 @@ img {
     border: 1px solid var(--default-border);
     background-color: var(--default-back);
     color: var(--default-text);
-    font-family: Inter;
+    font-family: Geologica;
     font-size: 14px;
     cursor: pointer;
     appearance: none;
