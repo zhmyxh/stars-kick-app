@@ -1,27 +1,86 @@
 import '../../styles/Referral.css'
+import { useQuery } from '@tanstack/react-query'
 
 import IconStar from '../../assets/icons/icon-star.svg?react'
 import IconLink from '../../assets/icons/icon-link.svg?react'
 import IconUsers from '../../assets/icons/icon-users.svg?react'
-import { useUserStore } from '../../store/useStore'
-import { useState } from 'react'
+import { useContentStore, useUserStore } from '../../store/useStore'
+import { useEffect, useState } from 'react'
 import Score from '../utility/Score'
 import { useTranslation } from 'react-i18next'
+import { httpGet, httpPost, TTL } from '../../api'
+import PageLoader from '../utility/PageLoader'
 
 function ReferralPage() {
-    const { referralCount, referralEarn, referralBalance, balance, user, referralLink } = useUserStore()
+    // const { referral, setReferral, referralUpdatedAt, balance, user } = useUserStore()
+    const { server } = useContentStore()
     const { t } = useTranslation()
     const [linkCopy, setLinkCopy] = useState(false)
 
+    const fetchReferral = async () => {
+        const data = await httpGet(server + 'referral')
+
+        return {
+            count: Number(data.total_referrals) || 0,
+            earn: Number(data.stars_earned) || 0,
+            balance: Number(data.available_balance) || 0,
+            link: data.link || '',
+        }
+    }
+
+    const { data: referral } = useQuery({
+        queryKey: ['referral'],
+        queryFn: fetchReferral,
+        staleTime: TTL,
+        cacheTime: TTL,
+    })
+
+    const [referralCount, setReferralCount] = useState(null)
+    const [referralEarn, setReferralEarn] = useState(null)
+    const [referralBalance, setReferralBalance] = useState(null)
+    const [referralLink, setReferralLink] = useState('')
+
+    useEffect(() => {
+        if (!referral) return
+
+        const formatNumber = (num) => {
+            if (num == null) return 0
+            const fixed = num.toFixed(1)
+            return fixed.endsWith('.0') ? fixed.slice(0, -2) : fixed
+        }
+
+        setReferralCount(Number(referral.count ?? 0))
+        setReferralEarn(formatNumber(referral.earn ?? 0))
+        setReferralBalance(formatNumber(referral.balance ?? 0))
+        setReferralLink(referral.link ?? '')
+    }, [referral])
+
     const handleShareLink = () => {
-        console.log('link shared')
-        // share logic (API)
+        function inviteFriends(message = referralLink) {
+            const tg = window.Telegram?.WebApp
+            if (!tg || typeof tg.shareData !== 'function') {
+                console.warn('Telegram WebApp shareData недоступен')
+                return
+            }
+
+            tg.shareData({
+                message: message
+            })
+                .then(() => {
+                    console.log('Окно выбора чата открыто. Пользователь может отправить сообщение сам.')
+                })
+                .catch((err) => {
+                    console.error('Не удалось открыть окно выбора чата:', err)
+                })
+        }
+
+        inviteFriends()
     }
 
     const handleCopyLink = async () => {
         if (linkCopy) return
 
-        const link = referralLink + user.user_tg_id // REF LINK!!!
+        const link = referralLink
         try {
             await navigator.clipboard.writeText(link)
             setLinkCopy(true)
@@ -30,9 +89,9 @@ function ReferralPage() {
         }
     }
 
-    const handleWithdraw = () => {
-        if (referralBalance <= 0) return
-        // withdraw logic (API)
+    const handleWithdraw = async () => {
+        const withdrawBalance = await httpPost(server + 'referral/claim')
+        console.log(withdrawBalance)
     }
 
     return (
@@ -53,20 +112,17 @@ function ReferralPage() {
             <div id="referral-info">
                 <div id="referral-number" className="box">
                     <span className="secondary-text">{t('header.referrals')}</span>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-                        <IconUsers className='icon-default' width={20} height={20} />
-                        <span className='header-text' style={{ fontWeight: 500 }}>{referralCount}</span>
-                    </div>
+                    <Score value={referralCount} icon={<IconUsers className='icon-default' width={18} height={18} />} filled={false} />
                 </div>
                 <div id="referral-earn" className="box">
                     <span className="secondary-text">{t('header.referralearn')}</span>
-                    <Score value={referralEarn} />
+                    <Score value={referralEarn} icon={<IconStar width={18} height={18} />} filled={true} />
                 </div>
             </div>
             <div id="referral-balance" className="box">
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                     <span className='secondary-text'>{t('header.referralbalance')}</span>
-                    <Score value={referralBalance} />
+                    <Score value={referralBalance} icon={<IconStar width={18} height={18} />} filled={true} />
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
                     <button className='button-main' onClick={handleWithdraw}>

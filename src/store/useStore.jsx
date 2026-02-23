@@ -86,22 +86,37 @@ export const useSettingsStore = create((set, get) => ({
 
 export const useUserStore = create((set, get) => ({
     // balance
-    balance: 15,
+    balance: null,
     setBalance: (value) => set({
         balance: value
     }),
 
     // user
     user: {},
+    undefinedUser: {
+        id: 10000,
+        is_bot: false,
+        first_name: "undefined",
+        last_name: "undefined",
+        username: "undefined",
+        language_code: "ru",
+        is_premium: true,
+        allows_write_to_pm: true,
+        photo_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIf4R5qPKHPNMyAqV-FjS_OTBB8pfUV29Phg&s"
+    },
     loginUser: (user) => set({
         user: user
     }),
 
     // referrals
-    referralCount: 0,
-    referralEarn: 0,
-    referralBalance: 0,
-    referralLink: 'https://t.me/blackjack_stars_bot/app?startapp='
+    referral: null,
+    referralUpdatedAt: null,
+
+    setReferral: (data) =>
+        set({
+            referral: data,
+            referralUpdatedAt: Date.now(),
+        }),
 }))
 
 export const useContentStore = create((set, get) => ({
@@ -109,6 +124,25 @@ export const useContentStore = create((set, get) => ({
     activities: [
         { name: 'blackjack', icon: 'activity-blackjack', link: 'play-page' },
         { name: 'events', icon: 'activity-events', link: 'events-page' }
+    ],
+
+    // events
+    events: [
+        {
+            question: 'Выйдет ли новый лимитированный подарок?',
+            category: 'MOMENTUM',
+            image_payload: 'https://i.ytimg.com/vi/TYnRwTdfet0/maxresdefault.jpg',
+            status: 'OPEN',
+            bet_close_date: '28.02.2026',
+            closes_at: '28.02.2026',
+            options: [
+                { name: 'yes', image_payload: '', option_id: 1, event_id: 5234, option_pool: 245 },
+                { name: 'no', image_payload: '', option_id: 2, event_id: 5234, option_pool: 645 }
+            ],
+            event_id: 5234,
+            winning_option_id: 2,
+            total_pool: 890
+        }
     ],
 
     // deposit
@@ -163,6 +197,7 @@ export const useContentStore = create((set, get) => ({
         { name: 'teddy-gift', icon: 'teddy-gift', price: 15 }
     ],
 
-    // relayer
+    // api
+    server: 'https://multi-game-hub.vercel.app/api/',
     botRelayerLink: 'https://t.me/blackjack_relayer'
 }))

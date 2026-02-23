@@ -15,7 +15,7 @@
 :root[data-theme="light"] {
     --app-color: rgb(244, 244, 244);
 
-    --default-text: rgb(49, 49, 49);
+    --default-text: rgb(65, 65, 65);
     --secondary-text: rgb(111, 111, 111);
 
     --default-button: rgb(218, 218, 218);
@@ -33,6 +33,7 @@
 
     --green: rgb(0, 152, 0);
     --blue: rgb(39, 135, 203);
+    --red: rgb(200, 10, 0);
 }
 
 :root[data-theme="dark"] {
@@ -42,7 +43,7 @@
     --secondary-text: rgb(134, 134, 134);
 
     --default-button: rgb(37, 37, 37);
-    --hover-back: rgb(31, 31, 31);
+    --hover-back: rgb(35, 35, 35);
     --active-back: rgb(42, 42, 42);
 
     --default-back: rgb(27, 27, 27);
@@ -56,9 +57,14 @@
 
     --green: rgb(0, 135, 0);
     --blue: rgb(39, 135, 203);
+    --red: rgb(175, 9, 0);
 }
 
 /* ------ body ------ */
+
+html {
+    scrollbar-gutter: stable overlay; /* overlay — скроллбар поверх контента */
+}
 
 body {
     padding: 0;
@@ -70,10 +76,6 @@ body {
 
 div, .navigation-button {
     transition: 0.3s;
-}
-
-span {
-    transition: 0.15s;
 }
 
 * {
@@ -128,7 +130,7 @@ span {
 
 span {
     font-family: Geologica;
-    line-height: 1.3em;
+    line-height: 1.4em;
 }
 
 .header-text {
@@ -220,6 +222,11 @@ button:disabled {
     background-color: var(--blue);
 }
 
+.b-r {
+    color: white;
+    background-color: var(--red);
+}
+
 .text-white {
     color: white;
 }
@@ -282,9 +289,17 @@ img {
 
 .score {
     display: flex;
+    justify-content: center;
     align-items: center;
     width: fit-content;
+    height: 30px;
     gap: 7px;
+}
+
+.score-filled {
+    padding-inline: 10px;
+    border-radius: 20px;
+    background-color: var(--hover-back);
 }
 
 #overlay {
@@ -385,6 +400,8 @@ img {
     color: var(--default-text);
 }
 
+/* loaders */
+
 .loader {
     position: absolute;
     top: 50%;
@@ -409,6 +426,36 @@ img {
     100% { box-shadow: 12px 0 0 0,
                        24px 0 0 2px,
                        36px 0 0 4px; }
+}
+
+.loader-2 {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    position: relative;
+    animation: rotate 1s linear infinite
+}
+
+.loader-2::before {
+    content: "";
+    box-sizing: border-box;
+    position: absolute;
+    inset: 0px;
+    border-radius: 50%;
+    border: 2px solid var(--default-icon);
+    animation: prixClipFix 2s linear infinite;
+}
+
+@keyframes rotate {
+    100%   {transform: rotate(360deg)}
+}
+
+@keyframes prixClipFix {
+    0%   {clip-path:polygon(50% 50%,0 0,0 0,0 0,0 0,0 0)}
+    25%  {clip-path:polygon(50% 50%,0 0,100% 0,100% 0,100% 0,100% 0)}
+    50%  {clip-path:polygon(50% 50%,0 0,100% 0,100% 100%,100% 100%,100% 100%)}
+    75%  {clip-path:polygon(50% 50%,0 0,100% 0,100% 100%,0 100%,0 100%)}
+    100% {clip-path:polygon(50% 50%,0 0,100% 0,100% 100%,0 100%,0 0)}
 }
 
 .dots {
@@ -618,10 +665,11 @@ img {
     border-radius: 0 0 15px 15px;
     top: 0;
     display: flex;
+    align-items: center;
     height: fit-content;
     justify-content: space-between;
     padding-block: 10px;
-    padding-inline: 14px 22px;
+    padding-inline: 14px;
     gap: 10px;
     z-index: 3;
 }

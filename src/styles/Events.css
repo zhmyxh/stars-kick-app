@@ -1,4 +1,63 @@
 #events {
     padding-inline: 15px;
     padding-block: 20px;
+    gap: 15px;
+}
+
+#events-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.event-box {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.event-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.event-wages {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.event-result {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--hover-back);
+    border-radius: 10px;
+    padding: 8px 10px;
+}
+
+.event-icon {
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 15px;
+}
+
+.event-pool {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+#event-filters {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.event-filter-category {
+    padding: 8px 12px;
+    border-radius: 20px;
+    background-color: var(--default-back);
 }

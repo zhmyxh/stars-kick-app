@@ -10,6 +10,7 @@ import IconRules from '../../assets/icons/icon-rules.svg?react'
 import { useSettingsStore, useUserStore } from '../../store/useStore'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { httpGet, httpPost } from '../../api'
 
 function ProfilePage() {
     const { toggleModal } = useSettingsStore()

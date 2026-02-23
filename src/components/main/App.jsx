@@ -1,11 +1,13 @@
 import { useEffect } from "react"
-import { useSettingsStore, useUserStore } from "../../store/useStore"
+import { useContentStore, useSettingsStore, useUserStore } from "../../store/useStore"
 import Panel from "../utility/Panel"
 import Navigation from "../utility/Navigation"
+import { useMutation, useQuery } from "@tanstack/react-query"
 
-import { Suspense, lazy } from "react";
+import { Suspense, lazy } from "react"
 
 const ActivityPage = lazy(() => import("../pages/Activity"))
+const GiftsPage = lazy(() => import("../pages/Gifts"))
 const EventsPage = lazy(() => import("../pages/Events"))
 const PlayPage = lazy(() => import("../pages/Play"))
 const ReferralPage = lazy(() => import("../pages/Referral"))
@@ -21,41 +23,44 @@ import Settings from '../modal/Settings'
 import Modal from "../utility/Modal"
 import { useTranslation } from "react-i18next"
 import i18n from './../../i18n'
+import { httpGet, httpPost, tg, TTL } from "../../api"
+import PageLoader from "../utility/PageLoader"
 
-function PageLoader() {
-    return (
-        <div id="page-loader">
-            <div className="loader" />
-        </div>
-    )
-}
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+const queryClient = new QueryClient()
 
 function App() {
     const { theme, changeTheme, currentPage, setPage, modalStatus, modalType, lang } = useSettingsStore()
-    const { loginUser, user } = useUserStore()
+    const { loginUser, user, setBalance, balance, undefinedUser } = useUserStore()
+    const { server } = useContentStore()
     const { t } = useTranslation()
 
+    const fetchBalance = async () => {
+        return await httpGet(server + 'wallet/balance')
+    }
+
+    const fetchUser = async () => {
+        return await httpPost(server + 'users')
+    }
+
+    const { data: wallet } = useQuery({
+        queryKey: ['wallet'],
+        queryFn: fetchBalance,
+        staleTime: TTL,
+        cacheTime: TTL,
+    })
+
+    const { mutate } = useMutation({
+        mutationFn: fetchUser,
+    })
+
     useEffect(() => {
-        const tg = window.Telegram?.WebApp
+        mutate()
 
         if (tg?.initDataUnsafe?.user) {
             loginUser(tg.initDataUnsafe.user)
         } else {
-            // demo login
-            loginUser(
-                {
-                    id: 123456789,
-                    is_bot: false,
-                    first_name: "Egor",
-                    last_name: "Ivanov",
-                    username: "egor_dev",
-                    language_code: "ru",
-                    is_premium: true,
-                    allows_write_to_pm: true,
-                    photo_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIf4R5qPKHPNMyAqV-FjS_OTBB8pfUV29Phg&s"
-                }
-            )
-
+            loginUser(undefinedUser)
         }
     }, [])
 
@@ -83,6 +88,7 @@ function App() {
             <div id="content">
                 <Suspense fallback={<PageLoader />}>
                     {currentPage === 'activity-page' && <ActivityPage />}
+                    {currentPage === 'gifts-page' && <GiftsPage />}
                     {currentPage === 'events-page' && <EventsPage />}
                     {currentPage === 'play-page' && <PlayPage />}
                     {currentPage === 'referral-page' && <ReferralPage />}

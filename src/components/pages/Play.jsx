@@ -129,7 +129,7 @@ function GameControl() {
                 {icon}
                 <span className='default-text' style={{ fontSize: 20, fontWeight: 'bold' }}>{header}</span>
                 <span className='secondary-text'>{message}</span>
-                <Score value={win === 'tie' ? 0 : totalBet * 2} />
+                <Score value={win === 'tie' ? 0 : totalBet * 2} icon={true} />
                 <button className='button-main b-g' style={{ width: '100%', marginTop: 15 }} onClick={() => setGameStatus('pre-start')}>
                     <span>{t('button.back')}</span>
                 </button>
