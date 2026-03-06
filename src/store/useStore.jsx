@@ -113,6 +113,11 @@ export const useUserStore = create((set, get) => ({
             referral: data,
             referralUpdatedAt: Date.now(),
         }),
+
+    wagerWarning: true,
+    cancelWagerWarning: () => set({
+        wagerWarning: false
+    })
 }))
 
 export const useContentStore = create((set, get) => ({
@@ -165,6 +170,6 @@ export const useContentStore = create((set, get) => ({
     withdrawMin: 50,
 
     // api
-    server: 'https://multi-game-hub.vercel.app/api/',
+    server: 'https://starskick-back.vercel.app/api/',
     botRelayerLink: 'https://t.me/blackjack_relayer'
 }))

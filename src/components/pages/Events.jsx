@@ -4,6 +4,7 @@ import '../../styles/Events.css'
 import NotFound from "../utility/NotFound"
 import IconUsers from '../../assets/icons/icon-users.svg?react'
 import IconStar from '../../assets/icons/icon-star.svg?react'
+import IconAlterStar from '../../assets/icons/icon-alter-star.svg?react'
 import Score from './../utility/Score'
 
 import IconCalendar from '../../assets/icons/icon-calendar.svg?react'
@@ -42,17 +43,21 @@ function Event({ event }) {
                     </div>
                 </div>
             </div>
-            <div className='event-wages'>
-                {poolPercent.map((option, i) => (
-                    <div className='event-wage' key={i}>
+            <div class='event-wages'>
+                {event?.options && event.options.map((option, i) => (
+                    <div className={`event-wage ${i === 0 ? 'yes' : 'no'}`} key={i}>
                         <span className='secondary-text'>«{t('option.' + option.name)}»</span>
-                        <span className='header-text'>{option.percent}%</span>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'end', gap: 6 }}>
+                            <div className={`event-wager-total ${i === 0 ? 'yes' : 'no'}`}>
+                                <span className='header-text'>{option.percent}%</span>
+                            </div>
+                        </div>
                     </div>
                 ))}
             </div>
             <div id='event-pool'>
-                <Score value={event.total_pool} icon={<IconStar width={18} height={18} />} filled={true} />
-                <Score value={event.total_wagers} icon={<IconUsers className='icon-default' width={18} height={18} />} filled={true} />
+                <Score value={event.total_pool} icon={<IconAlterStar className='icon-default' width={16} height={16} />} filled={true} size={14} />
+                <Score value={event.total_wagers} icon={<IconUsers className='icon-default' width={16} height={16} />} filled={true} size={14} />
             </div>
         </div>
     )
@@ -64,18 +69,12 @@ function EventsPage() {
     return (
         <div id="events" className='app-page'>
             <div id='event-filters'>
-                <div className='event-filter-category'>
-                    <span className='secondary-text'>Momentum</span>
-                </div>
-                <div className='event-filter-category'>
-                    <span className='secondary-text'>Duel</span>
-                </div>
-                <div className='event-filter-category'>
-                    <span className='secondary-text'>Volume</span>
-                </div>
-                <div className='event-filter-category'>
-                    <span className='secondary-text'>News</span>
-                </div>
+                <button className='button-alter'>
+                    <span className='secondary-text'>Active</span>
+                </button>
+                <button className='button-alter'>
+                    <span className='secondary-text'>Resolved</span>
+                </button>
             </div>
             <div id='events-list'>
                 {events.map((event, i) => (

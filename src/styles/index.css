@@ -32,8 +32,10 @@
     --invert-icon: rgb(255, 255, 255);
 
     --green: rgb(0, 152, 0);
+    --alt-green: rgba(0, 152, 0, 0.16);
     --blue: rgb(39, 135, 203);
     --red: rgb(200, 10, 0);
+    --alt-red: rgba(200, 10, 0, 0.16);
 }
 
 :root[data-theme="dark"] {
@@ -56,8 +58,10 @@
     --invert-icon: rgb(255, 255, 255);
 
     --green: rgb(0, 135, 0);
+    --alt-green: rgba(0, 152, 0, 0.22);
     --blue: rgb(39, 135, 203);
     --red: rgb(175, 9, 0);
+    --alt-red: rgba(200, 10, 0, 0.22);
 }
 
 /* ------ body ------ */
@@ -96,7 +100,6 @@ div, .navigation-button {
     flex-direction: column;
     width: 100%;
     max-width: 420px;
-    max-height: 750px;
     height: 100%;
     background-color: var(--app-color);
     box-sizing: border-box;
@@ -334,10 +337,6 @@ img {
     padding-inline: 10px;
     border-radius: 20px;
     background-color: var(--hover-back);
-}
-
-.score span {
-    line-height: 1;
 }
 
 #overlay {

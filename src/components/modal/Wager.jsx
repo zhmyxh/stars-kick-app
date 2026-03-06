@@ -1,4 +1,4 @@
-import { act, useEffect, useState } from "react"
+import { act, useEffect, useRef, useState } from "react"
 import { useContentStore, useSettingsStore, useUserStore } from "../../store/useStore"
 import NotFound from "../utility/NotFound"
 import IconStar from '../../assets/icons/icon-star.svg?react'
@@ -17,13 +17,33 @@ import { Trans, useTranslation } from "react-i18next"
 import Button from "../utility/Button"
 import IconWarning from '../../assets/icons/icon-warning.svg?react'
 import IconProfile from '../../assets/icons/icon-profile.svg?react'
+import IconAlterStar from '../../assets/icons/icon-alter-star.svg?react'
 
 function WagerTitle({ event, handleStep, setCurrentOption }) {
+    const { wagerWarning, cancelWagerWarning } = useUserStore()
     const { user } = useUserStore()
     const { t } = useTranslation()
+
     const selectOption = (option) => {
         handleStep('forward')
         setCurrentOption(option)
+    }
+
+    const WagerWarning = () => {
+        if (!wagerWarning) return
+        return (
+            <div id="event-wager-warning" style={{ marginBottom: 10 }}>
+                <div style={{ display: 'flex', alignItems: 'start', gap: 10 }}>
+                    <div style={{ width: 20, height: 20 }}>
+                        <IconWarning className='icon-default' width={20} height={20} />
+                    </div>
+                    <span className="secondary-text">{t('warning.placeabet')}</span>
+                </div>
+                <div style={{ width: '100%', display: 'flex', justifyContent: 'right' }}>
+                    <Button name={t('button.gotit')} type='alter' size={14} action={cancelWagerWarning} />
+                </div>
+            </div>
+        )
     }
 
     return (
@@ -44,15 +64,10 @@ function WagerTitle({ event, handleStep, setCurrentOption }) {
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                         <span className="secondary-text">{t('header.placeabet')}</span>
-                        <div id="event-wager-warning" style={{ marginBottom: 10 }}>
-                            <div style={{ width: 20, height: 20 }}>
-                                <IconWarning className='icon-default' width={20} height={20} />
-                            </div>
-                            <span className="secondary-text">{t('warning.placeabet')}</span>
-                        </div>
+                        <WagerWarning />
                         <div id="event-actions">
                             {event?.options && event.options.map((option, i) => (
-                                <Button name={t('option.' + option.name)} icon={<IconBuy className='icon-invert' width={20} height={20} />}
+                                <Button name={t('option.' + option.name)}
                                     color={i === 0 ? 'b-g' : 'b-r'} wd={true}
                                     action={() => selectOption(option)} />
                             ))}
@@ -62,29 +77,18 @@ function WagerTitle({ event, handleStep, setCurrentOption }) {
                         <span className="secondary-text">{t('header.stats')}</span>
                         <div id='event-wages'>
                             {event?.options && event.options.map((option, i) => (
-                                <div className='event-wage' key={i}>
+                                <div className={`event-wage ${i === 0 ? 'yes' : 'no'}`} key={i}>
                                     <span className='secondary-text'>«{t('option.' + option.name)}»</span>
-                                    <span className='header-text'>{option.percent}%</span>
+                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'end', gap: 6 }}>
+                                        <div className={`event-wager-total ${i === 0 ? 'yes' : 'no'}`}>
+                                            <span className='header-text'>{option.percent}%</span>
+                                        </div>
+                                        <div className={`event-wager-total ${i === 0 ? 'yes' : 'no'}`}>
+                                            <Score value={option.option_pool} icon={<IconStar width={18} height={18} />} />
+                                        </div>
+                                    </div>
                                 </div>
                             ))}
-                        </div>
-                        <div className="event-stats-table">
-                            <table>
-                                <tr>
-                                    {event?.options && event.options.map((option, i) => (
-                                        <th>«{t('option.' + option.name)}»</th>
-                                    ))}
-                                </tr>
-                                <tr>
-                                    {event?.options && event.options.map((option, i) => (
-                                        <td>
-                                            <div className="cell-content">
-                                                <Score value={option.option_pool} icon={<IconStar width={18} height={18} />} />
-                                            </div>
-                                        </td>
-                                    ))}
-                                </tr>
-                            </table>
                         </div>
                         <div id="event-stats">
                             <div className="event-stat-box">
@@ -98,7 +102,7 @@ function WagerTitle({ event, handleStep, setCurrentOption }) {
                         </div>
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                        <span className="secondary-text">{t('header.userparticipating')}</span>
+                        {/* <span className="secondary-text">{t('header.userparticipating')}</span> */}
                         {event.is_user_participating && (
                             <div id="event-user-info">
                                 <div id="event-user-participating">
@@ -144,34 +148,41 @@ function WagerTitle({ event, handleStep, setCurrentOption }) {
 function WagerBuy({ currentOption }) {
     const { t } = useTranslation()
     const [amount, setAmount] = useState(0)
+    const inputRef = useRef()
     const amountOptions = [
         20, 50, 70, 100, 150, 200
     ]
 
     const handleAmount = (action) => {
-        if (action === 'add' && amount < 500) setAmount(prev => prev + 5)
-        if (action === 'reduce' && amount > 0) setAmount(prev => prev - 5)
-        if (typeof action === 'number' && action < 500 && action > 0) setAmount(action)
+        if (action === 'add') setAmount(prev => prev + 5)
+        if (action === 'reduce') setAmount(prev => prev - 5)
+        if (typeof action === 'number') setAmount(action)
         if (!action) setAmount(0)
     }
+
+    useEffect(() => {
+        if (amount > 500) setAmount(500)
+
+        if (inputRef.current) {
+            inputRef.current.value = amount
+        }
+    }, [amount])
 
     return (
         <div id="wager-buy">
             <div id="wager-info">
                 <span className="secondary-text">{t('header.youroption')}</span>
-                <div id="wager-current-option">
+                <div id="wager-current-option" className={currentOption.name}>
                     <span className="header-text" style={{ fontWeight: 'bold', fontSize: 24 }}>«{t('option.' + currentOption.name)}»</span>
                     <span className="secondary-text">{t('header.chance')}: {currentOption.percent}%</span>
+                    <Score value={currentOption.option_pool} icon={<IconAlterStar className='icon-default' width={18} height={18} />} />
                 </div>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 <span className="secondary-text">{t('header.amount')}</span>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <Score value={amount} icon={<IconStar width={18} height={18} />} filled={true} />
-                </div>
                 <div id="wager-bet-amount">
                     <IconStar width={34} height={34} />
-                    <input id="wager-bet-input" type="number" placeholder={t('definition.typeamount')}
+                    <input ref={inputRef} id="wager-bet-input" type="number" placeholder={t('definition.typeamount')}
                         onChange={(e) => handleAmount(Number(e.currentTarget.value))} />
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                         <button className="button-i" onClick={() => handleAmount('add')}>
@@ -187,7 +198,10 @@ function WagerBuy({ currentOption }) {
                 </div>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                <Button name={t('header.placeabet')} type={'main'} color='b-b' wd={true} />
+                <button className='button-main b-b' style={{ width: '100%' }} disabled={!amount}>
+                    <span className="white-text">{t('header.placeabet')}</span>
+                    <Score value={amount} icon={<IconStar width={18} height={18} />} color={'white'} />
+                </button>
                 <Button name={t('button.clear')} type={'secondary'} wd={true} action={() => amount > 0 && setAmount(0)} />
             </div>
         </div>
@@ -230,7 +244,7 @@ function Wager() {
 
     const steps = [
         'definition.wagerstep.1',
-        'definition.wagerstep.1'
+        'definition.wagerstep.2'
     ]
 
     useEffect(() => {

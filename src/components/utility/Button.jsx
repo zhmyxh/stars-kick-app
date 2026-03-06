@@ -9,6 +9,7 @@ function Button({ name, icon, color, type, action, wd, size }) {
         if (type === 'main' && !color) textClass = 'default-text'
         if (type === 'secondary') textClass = 'secondary-text'
         if (type === 'main' && color) textClass = 'white-text'
+        if (type === 'alter' && !color) textClass = 'button-alter'
     }, [])
 
     return (
@@ -17,7 +18,7 @@ function Button({ name, icon, color, type, action, wd, size }) {
             style={{ width: wd ? '100%' : 'fit-content' }}
             onClick={action}>
             {icon && icon}
-            <span className={textClass} style={{ fontSize: size ? size : 16 }}>{name}</span>
+            {name ? <span className={textClass} style={{ fontSize: size ? size : 16 }}>{name}</span> : <div className="loader-2"></div>}
         </button>
     )
 }

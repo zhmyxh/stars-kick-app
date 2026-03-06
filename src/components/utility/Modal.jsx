@@ -35,7 +35,7 @@ function Modal({ header, children }) {
     const handleModal = () => {
         setOpened(false)
         setTimeout(() => {
-            toggleModal()
+            if (opened) toggleModal()
         }, 300)
     }
 
