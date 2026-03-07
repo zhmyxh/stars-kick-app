@@ -11,13 +11,14 @@ import IconBuy from '../../assets/icons/icon-buy.svg?react'
 import IconAdd from '../../assets/icons/icon-add.svg?react'
 import IconMinus from '../../assets/icons/icon-minus.svg?react'
 import IconCalendar from '../../assets/icons/icon-calendar.svg?react'
-import { utcFormat } from "../../api"
+import { httpGet, utcFormat } from "../../api"
 import SmartImage from "../utility/SmartImage"
 import { Trans, useTranslation } from "react-i18next"
 import Button from "../utility/Button"
 import IconWarning from '../../assets/icons/icon-warning.svg?react'
 import IconProfile from '../../assets/icons/icon-profile.svg?react'
 import IconAlterStar from '../../assets/icons/icon-alter-star.svg?react'
+import { useQueryClient } from "@tanstack/react-query"
 
 function WagerTitle({ event, handleStep, setCurrentOption }) {
     const { wagerWarning, cancelWagerWarning } = useUserStore()
@@ -32,16 +33,17 @@ function WagerTitle({ event, handleStep, setCurrentOption }) {
     const WagerWarning = () => {
         if (!wagerWarning) return
         return (
-            <div id="event-wager-warning" style={{ marginBottom: 10 }}>
-                <div style={{ display: 'flex', alignItems: 'start', gap: 10 }}>
-                    <div style={{ width: 20, height: 20 }}>
-                        <IconWarning className='icon-default' width={20} height={20} />
+            <div className="flex flex-col mb-[10px]">
+                <div id="event-wager-warning" style={{ marginBottom: 10 }}>
+                    <div style={{ display: 'flex', alignItems: 'start', gap: 10 }}>
+                        <div style={{ width: 20, height: 20 }}>
+                            <IconWarning className='icon-default' width={20} height={20} />
+                        </div>
+                        <span className="secondary-text">{t('warning.placeabet')}</span>
                     </div>
-                    <span className="secondary-text">{t('warning.placeabet')}</span>
+
                 </div>
-                <div style={{ width: '100%', display: 'flex', justifyContent: 'right' }}>
-                    <Button name={t('button.gotit')} type='alter' size={14} action={cancelWagerWarning} />
-                </div>
+                <Button name={t('button.gotit')} type='alter' size={14} action={cancelWagerWarning} />
             </div>
         )
     }
@@ -52,13 +54,13 @@ function WagerTitle({ event, handleStep, setCurrentOption }) {
                 <div id='event-box'>
                     <div id="event-info-box">
                         <div id='event-image'>
-                            <SmartImage src={event.image_payload} alt='Event icon' width={85} height={85} />
+                            <SmartImage src={event.image_payload} alt='Event icon' width={80} height={80} />
                         </div>
                         <div id='event-info'>
                             <span className='header-text'>{event.question}</span>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
                                 <IconCalendar className={'icon-default'} width={15} height={15} />
-                                <span className='secondary-text'>{event?.bet_close_date && utcFormat(event.bet_close_date)}</span>
+                                <span className='secondary-text'>{utcFormat(event.closes_at)}</span>
                             </div>
                         </div>
                     </div>
@@ -67,7 +69,7 @@ function WagerTitle({ event, handleStep, setCurrentOption }) {
                         <WagerWarning />
                         <div id="event-actions">
                             {event?.options && event.options.map((option, i) => (
-                                <Button name={t('option.' + option.name)}
+                                <Button name={option.name}
                                     color={i === 0 ? 'b-g' : 'b-r'} wd={true}
                                     action={() => selectOption(option)} />
                             ))}
@@ -78,7 +80,7 @@ function WagerTitle({ event, handleStep, setCurrentOption }) {
                         <div id='event-wages'>
                             {event?.options && event.options.map((option, i) => (
                                 <div className={`event-wage ${i === 0 ? 'yes' : 'no'}`} key={i}>
-                                    <span className='secondary-text'>«{t('option.' + option.name)}»</span>
+                                    <span className='secondary-text'>«{option.name}»</span>
                                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'end', gap: 6 }}>
                                         <div className={`event-wager-total ${i === 0 ? 'yes' : 'no'}`}>
                                             <span className='header-text'>{option.percent}%</span>
@@ -97,12 +99,11 @@ function WagerTitle({ event, handleStep, setCurrentOption }) {
                             </div>
                             <div className="event-stat-box">
                                 <span className="secondary-text">{t('header.participants')}</span>
-                                <Score value={event.total_wagers} icon={<IconUsers className='icon-default' width={18} height={18} />} />
+                                <Score value={event.total_participants} icon={<IconUsers className='icon-default' width={18} height={18} />} />
                             </div>
                         </div>
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                        {/* <span className="secondary-text">{t('header.userparticipating')}</span> */}
                         {event.is_user_participating && (
                             <div id="event-user-info">
                                 <div id="event-user-participating">
@@ -173,7 +174,7 @@ function WagerBuy({ currentOption }) {
             <div id="wager-info">
                 <span className="secondary-text">{t('header.youroption')}</span>
                 <div id="wager-current-option" className={currentOption.name}>
-                    <span className="header-text" style={{ fontWeight: 'bold', fontSize: 24 }}>«{t('option.' + currentOption.name)}»</span>
+                    <span className="header-text" style={{ fontWeight: 'bold', fontSize: 24 }}>«{currentOption.name}»</span>
                     <span className="secondary-text">{t('header.chance')}: {currentOption.percent}%</span>
                     <Score value={currentOption.option_pool} icon={<IconAlterStar className='icon-default' width={18} height={18} />} />
                 </div>
@@ -236,8 +237,8 @@ function Wager() {
     const { toggleModal, modalIndex } = useSettingsStore()
     const { events } = useContentStore()
     const { t } = useTranslation()
+    const { server } = useContentStore()
 
-    const [currentEvent, setCurrentEvent] = useState({})
     const [step, setStep] = useState(1)
     const [currentOption, setCurrentOption] = useState({})
     const [paymentStatus, setPaymentStatus] = useState(true)
@@ -247,9 +248,36 @@ function Wager() {
         'definition.wagerstep.2'
     ]
 
+    const queryClient = useQueryClient()
+    const eventsQueries = queryClient.getQueriesData({ queryKey: ['events'] })
+
+    const fetchEvent = async () => await httpGet(server + 'market-wagers/events/' + modalIndex)
+
+    const [currentEvent, setCurrentEvent] = useState(null)
+    const [isLoadingEvent, setIsLoadingEvent] = useState(false)
+
     useEffect(() => {
-        const event = events.find(e => Number(e.event_id) === modalIndex)
-        setCurrentEvent(event)
+        const load = async () => {
+            setIsLoadingEvent(true)
+
+            const events = eventsQueries.flatMap(q => q[1]?.events || [])
+            const event = events.find(e => e.event_id === Number(modalIndex))
+
+            if (event) {
+                const data = await fetchEvent()
+                setCurrentEvent({
+                    ...event,
+                    options: (event.options || []).map((opt, i) => ({
+                        ...opt,
+                        ...(data.options?.[i] || {})
+                    }))
+                })
+            }
+
+            setIsLoadingEvent(false)
+        }
+
+        load()
     }, [])
 
     const handleStep = (dir) => {
@@ -259,22 +287,33 @@ function Wager() {
 
     return (
         <div id="wager">
-            {step === 1 && <WagerTitle event={currentEvent} handleStep={handleStep} setCurrentOption={setCurrentOption} />}
-            {step === 2 && <WagerBuy event={currentEvent} handleStep={handleStep} currentOption={currentOption} setPaymentStatus={setPaymentStatus} />}
-            {(step === 4 && paymentStatus) && <WagerSuccess />}
-            {(step === 4 && !paymentStatus) && <WagerFailed />}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
-                {step !== 1 && (
-                    <div id="wager-page-buttons">
-                        <button className="button-i" onClick={() => handleStep('back')}>
-                            <div style={{ transform: 'rotate(90deg)', display: 'flex' }}>
-                                <IconArrow className={'icon-default'} width={20} height={20} />
-                            </div>
-                        </button>
-                    </div>
-                )}
-                <span className="secondary-text"><b>{t('header.step')} {step}.</b> {t(steps[step - 1])}</span>
-            </div>
+            {
+                isLoadingEvent
+                    ? <div className="loader"></div>
+                    : (() => {
+                        return (
+                            <>
+                                {step === 1 && <WagerTitle event={currentEvent} handleStep={handleStep} setCurrentOption={setCurrentOption} />}
+                                {step === 2 && <WagerBuy event={currentEvent} handleStep={handleStep} currentOption={currentOption} setPaymentStatus={setPaymentStatus} />}
+                                {(step === 4 && paymentStatus) && <WagerSuccess />}
+                                {(step === 4 && !paymentStatus) && <WagerFailed />}
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+                                    {step !== 1 && (
+                                        <div id="wager-page-buttons">
+                                            <button className="button-i" onClick={() => handleStep('back')}>
+                                                <div style={{ transform: 'rotate(90deg)', display: 'flex' }}>
+                                                    <IconArrow className={'icon-default'} width={20} height={20} />
+                                                </div>
+                                            </button>
+                                        </div>
+                                    )}
+                                    <span className="secondary-text"><b>{t('header.step')} {step}.</b> {t(steps[step - 1])}</span>
+                                </div></>
+                        )
+
+                    })()
+            }
+
         </div>
     )
 }

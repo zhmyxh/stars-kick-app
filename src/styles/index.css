@@ -1,3 +1,9 @@
+/* @layer theme, base, components, utilities;
+@import "tailwindcss/theme" layer(theme);
+@import "tailwindcss/utilities" layer(utilities); */
+
+@import "tailwindcss";
+
 /* ------ font ------ */
 
 /* @font-face {
@@ -287,6 +293,7 @@ img {
     pointer-events: none;
     user-select: none;
     cursor: default;
+    max-width: none;
 }
 
 /* .line {

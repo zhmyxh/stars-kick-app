@@ -109,7 +109,6 @@ function App() {
                     {currentPage === 'profile-page' && <ProfilePage />}
                 </Suspense>
             </div>
-
             <Navigation />
         </div>
     )

@@ -12,7 +12,6 @@ import { httpGet, httpPost, tg, TTL } from '../../api'
 import PageLoader from '../utility/PageLoader'
 
 function ReferralPage() {
-    // const { referral, setReferral, referralUpdatedAt, balance, user } = useUserStore()
     const { server } = useContentStore()
     const { t } = useTranslation()
     const [linkCopy, setLinkCopy] = useState(false)

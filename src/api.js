@@ -96,10 +96,14 @@ export async function httpPost(url, data = {}, options = {}) {
 }
 
 export function utcFormat(utcDate) {
-    const date = new Date(utcDate)
+    if (!utcDate) return ''
+
+    const cleanDate = typeof utcDate === 'string' ? utcDate.trim() : utcDate
+    const date = new Date(cleanDate)
 
     if (isNaN(date.getTime())) {
-        throw new Error('Invalid date')
+        console.error('utcFormat ERROR: Failed to parse date ->', utcDate)
+        return 'Invalid Date'
     }
 
     return new Intl.DateTimeFormat('en-US', {
