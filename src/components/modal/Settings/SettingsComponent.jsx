@@ -1,5 +1,7 @@
+import './_settings.styles.css'
+
 import { Trans, useTranslation } from "react-i18next"
-import { useSettingsStore } from "../../store/useStore"
+import { useSettingsStore } from "@/store/useStore"
 
 function Settings() {
     const { theme, changeTheme, version, langList, lang, setLang } = useSettingsStore()

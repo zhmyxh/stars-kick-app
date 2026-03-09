@@ -1,8 +1,8 @@
-import '../../styles/Modal.css'
+import './Modal.styles.css'
 
-import IconClose from '../../assets/icons/icon-close.svg?react'
-import { useSettingsStore } from '../../store/useStore'
-import NotFound from './NotFound'
+import IconClose from '@/assets/icons/icon-close.svg?react'
+import { useSettingsStore } from '@/store/useStore'
+import NotFound from '@/components/utility/NotFound'
 import { useEffect, useRef, useState } from 'react'
 
 function Modal({ header, children }) {
@@ -40,7 +40,7 @@ function Modal({ header, children }) {
     }
 
     return (
-        <div id="overlay" onClick={handleModal}>
+        <div id="modal-overlay" onClick={handleModal}>
             <div id="modal" className={opened ? "modal-open" : ""} onClick={(e) => e.stopPropagation()}>
                 <div id="modal-header">
                     <span className="default-text" style={{ fontWeight: 'bold', fontSize: 20 }}>{header}</span>

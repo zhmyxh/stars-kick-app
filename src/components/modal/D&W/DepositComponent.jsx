@@ -1,12 +1,12 @@
-import '../../styles/DepWith.css'
+import './_deposit.withdraw.styles.css'
 
 import { useState } from 'react'
-import { useContentStore, useUserStore } from '../../store/useStore'
-import IconStar from '../../assets/icons/icon-star.svg?react'
-import Score from '../utility/Score'
+import { useContentStore, useUserStore } from '@/store/useStore'
+import IconStar from '@/assets/icons/icon-star.svg?react'
+import Score from '@/components/utility/Score'
 import { Trans, useTranslation } from 'react-i18next'
 
-function Deposit() {
+export default function Deposit() {
     const { depositPack, depositFee, depositMin } = useContentStore()
     const { t } = useTranslation()
     const [amount, setAmount] = useState(0)
@@ -26,12 +26,6 @@ function Deposit() {
     return (
         <div id="deposit">
             <span className='secondary-text'>{t('definition.deposit')}</span>
-            <div id='deposit-info'>
-                <div className='deposit-info-box'>
-                    <span className='secondary-text'>Fee</span>
-                    <Score value={depositFee + '%'} />
-                </div>
-            </div>
             <div id='deposit-list'>
                 {depositPack.map((pack, i) => {
                     const id = pack.amount + 'stars'
@@ -43,7 +37,7 @@ function Deposit() {
                     )
                 })}
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <div className='flex flex-col gap-[10px] h-fit'>
                 <button className='button-main b-g' style={{ width: '100%' }} disabled={amount === 0}>
                     <span className="white-text">{t('button.buy')}</span>
                     <Score value={amount} color={'white'} icon={<IconStar width={18} height={18} />} />
@@ -55,5 +49,3 @@ function Deposit() {
         </div>
     )
 }
-
-export default Deposit

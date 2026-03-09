@@ -33,17 +33,25 @@
 #event-info {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 5px;
 }
 
-.event-wages,
-#event-wages {
+.event-options {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
 }
 
-.event-wager-total {
+.event-option {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-radius: 10px;
+    background-color: var(--hover-back);
+    padding: 10px;
+}
+
+.event-option-total {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -53,16 +61,6 @@
     background-color: var(--active-back);
     border-radius: 5px;
     padding: 8px 10px;
-}
-
-.event-wage,
-#event-wage {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    border-radius: 10px;
-    background-color: var(--hover-back);
-    padding: 10px;
 }
 
 .event-image,
@@ -160,56 +158,4 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-}
-
-#wager-info {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-#wager-bet-input {
-    font-size: 24px;
-    padding: 10px;
-}
-
-#event-wager-warning {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    background-color: var(--hover-back);
-    padding: 18px;
-    border-radius: 10px;
-}
-
-#wager-buy {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-#wager-bet-amount {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    box-sizing: border-box;
-}
-
-#wager-amounts {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
-}
-
-#wager-current-option {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-    background-color: var(--hover-back);
-    padding: 18px;
-    border-radius: 10px;
 }

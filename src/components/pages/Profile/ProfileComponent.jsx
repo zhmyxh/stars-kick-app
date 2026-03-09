@@ -1,22 +1,16 @@
-import '../../styles/Profile.css'
+import './_profile.styles.css'
 
-import Score from "../utility/Score"
-import ProfileImage from '../../assets/images/profile-image.jpg'
-import IconSettings from '../../assets/icons/tech-icons/icon-settings.svg?react'
-
-import IconDeposit from '../../assets/icons/icon-deposit.svg?react'
-import IconWithdraw from '../../assets/icons/icon-export.svg?react'
-import IconRules from '../../assets/icons/icon-rules.svg?react'
-import IconStar from '../../assets/icons/icon-star.svg?react'
-
-import { useSettingsStore, useUserStore } from '../../store/useStore'
-import { useEffect, useRef, useState } from 'react'
+import { useSettingsStore, useUserStore } from '@/store/useStore'
 import { useTranslation } from 'react-i18next'
-import { httpGet, httpPost } from '../../api'
-import { useQueryClient } from '@tanstack/react-query'
-import SmartImage from '../utility/SmartImage'
 
-function ProfilePage() {
+import IconSettings from '@/assets/icons/tech-icons/icon-settings.svg?react'
+import IconDeposit from '@/assets/icons/icon-deposit.svg?react'
+import IconWithdraw from '@/assets/icons/icon-export.svg?react'
+import IconRules from '@/assets/icons/icon-rules.svg?react'
+
+import SmartImage from '@/components/utility/SmartImage'
+
+export default function ProfilePage() {
     const { toggleModal } = useSettingsStore()
     const { balance, user } = useUserStore()
     const { t } = useTranslation()
@@ -64,5 +58,3 @@ function ProfilePage() {
         </div>
     )
 }
-
-export default ProfilePage

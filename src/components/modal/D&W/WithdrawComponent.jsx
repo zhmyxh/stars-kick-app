@@ -1,15 +1,15 @@
-import '../../styles/DepWith.css'
+import './_deposit.withdraw.styles.css'
 
 import { useEffect, useState } from 'react'
-import { useContentStore, useUserStore } from '../../store/useStore'
-
-import IconWarning from '../../assets/icons/icon-warning.svg?react'
-import IconStar from '../../assets/icons/icon-star.svg?react'
-import Score from '../utility/Score'
 import { Trans, useTranslation } from 'react-i18next'
 import { useQueryClient } from '@tanstack/react-query'
 
-function Withdraw() {
+import { useContentStore, useUserStore } from '@/store/useStore'
+
+import IconStar from '@/assets/icons/icon-star.svg?react'
+import Score from '@/components/utility/Score'
+
+export default function Withdraw() {
     const { withdrawPack, withdrawFee, withdrawMin } = useContentStore()
     const { t } = useTranslation()
     const [amount, setAmount] = useState(0)
@@ -58,7 +58,7 @@ function Withdraw() {
                     )
                 })}
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <div className='flex flex-col gap-[10px]'>
                 <button className='button-main b-b' style={{ width: '100%' }} disabled={!ableToWith}>
                     <span className="white-text">{ableToWith ? t('button.withdraw') : 'You cannot withdraw this amount'}</span>
                     {ableToWith && <Score value={amount} color={'white'} icon={<IconStar width={18} height={18} />} />}
@@ -70,5 +70,3 @@ function Withdraw() {
         </div>
     )
 }
-
-export default Withdraw

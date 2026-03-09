@@ -2,7 +2,7 @@ export const tg = window.Telegram?.WebApp
 export const tgInitData = tg?.initData || "user=%7B%22id%22%3A894251538%2C%22first_name%22%3A%22Egor%22%2C%22last_name%22%3A%22%22%2C%22username%22%3A%22zhmyx_h%22%2C%22language_code%22%3A%22ru%22%2C%22allows_write_to_pm%22%3Atrue%2C%22photo_url%22%3A%22https%3A%5C%2F%5C%2Ft.me%5C%2Fi%5C%2Fuserpic%5C%2F320%5C%2FoN4NlSrCXK0YLXcRJj52h1rhnUKL5p_5338IODK5baU.svg%22%7D&chat_instance=3981793611721022947&chat_type=sender&auth_date=1771700049&signature=Y6RZD5mw1kfGGehFOz26OPR_ktnCAtZEbjuNsbB5raRh5usIV4PN0xynnfC2vor8W1o0kfSVKZynTo_pEQS5CQ&hash=62f0e3c7bcce47afe7c0c8fc4ede981257b91ca28125ece1127eec9d901c848b"
 export const TTL = 1000 * 60 * 5
 
-const DEFAULT_TIMEOUT = 2000
+const DEFAULT_TIMEOUT = 10000
 
 function buildQuery(params = {}) {
     const query = new URLSearchParams()

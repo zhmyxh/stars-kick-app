@@ -1,0 +1,208 @@
+#wager {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    padding-bottom: 15px;
+}
+
+.event-box,
+#event-box {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.event-box:active {
+    opacity: 0.8;
+    transform: scale(0.95);
+}
+
+.event-info,
+#event-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.event-options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.event-option {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-radius: 10px;
+    background-color: var(--hover-back);
+    padding: 10px;
+}
+
+.event-option-total {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    width: 100%;
+    box-sizing: border-box;
+    background-color: var(--active-back);
+    border-radius: 5px;
+    padding: 8px 10px;
+}
+
+.event-image,
+#event-image {
+    display: flex;
+    min-width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.event-pool,
+#event-pool {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+#event-actions {
+    display: flex;
+    gap: 10px;
+}
+
+#event-filters {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.event-filter-category {
+    padding: 8px 12px;
+    border-radius: 20px;
+    background-color: var(--default-back);
+}
+
+.event-block {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.event-stats-table {
+    display: flex;
+    width: 100%;
+}
+
+#event-info-box {
+    display: flex;
+    gap: 15px;
+    position: sticky;
+    top: 0;
+    padding-bottom: 15px;
+    background-color: var(--default-back);
+    z-index: 2;
+}
+
+#event-stats,
+#event-user-wagers {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.event-stat-box {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background-color: var(--hover-back);
+    padding: 12px 14px;
+    border-radius: 10px;
+}
+
+#event-user-participating {
+    display: flex;
+    align-items: start;
+    width: fit-content;
+    gap: 10px;
+}
+
+#event-user-participating span {
+    margin-right: 8px;
+}
+
+.event-user-wager {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: var(--hover-back);
+    padding: 12px 14px;
+    border-radius: 10px;
+}
+
+#event-user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#wager-info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#wager-bet-input {
+    font-size: 24px;
+    padding: 10px;
+}
+
+#event-wager-warning {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background-color: var(--hover-back);
+    padding: 18px;
+    border-radius: 10px;
+}
+
+#wager-buy {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#wager-bet-amount {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    box-sizing: border-box;
+}
+
+#wager-amounts {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+#wager-current-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    background-color: var(--hover-back);
+    padding: 18px;
+    border-radius: 10px;
+}
+
+#wager-status {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 230px;
+}

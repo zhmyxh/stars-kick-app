@@ -1,7 +1,8 @@
 import { useEffect } from "react"
 import { useTranslation } from "react-i18next"
+import SmartImage from "./SmartImage"
 
-function Button({ name, icon, color, type, action, wd, size }) {
+function Button({ name, icon, color, type, action, wd, size, image }) {
     const { t } = useTranslation()
     let textClass = ''
 
@@ -14,11 +15,12 @@ function Button({ name, icon, color, type, action, wd, size }) {
 
     return (
         <button
-            className={`button-${type} ${color ? color : ''}`}
-            style={{ width: wd ? '100%' : 'fit-content' }}
+            className={`button-${type} ${color ? color : ''} ${image ? 'flex-col' : ''}`}
+            style={{ width: wd ? '100%' : 'fit-content', height: image ? 120 : '' }}
             onClick={action}>
             {icon && icon}
-            {name ? <span className={textClass} style={{ fontSize: size ? size : 16 }}>{name}</span> : <div className="loader-2"></div>}
+            {name && <span className={textClass} style={{ fontSize: size ? size : 16 }}>{name}</span>}
+            {image && <SmartImage src={image} width={60} height={60} />}
         </button>
     )
 }

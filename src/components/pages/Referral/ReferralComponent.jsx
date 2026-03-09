@@ -1,17 +1,20 @@
-import '../../styles/Referral.css'
-import { useQuery } from '@tanstack/react-query'
+import './_referral.styles.css'
 
-import IconStar from '../../assets/icons/icon-star.svg?react'
-import IconLink from '../../assets/icons/icon-link.svg?react'
-import IconUsers from '../../assets/icons/icon-users.svg?react'
-import { useContentStore, useUserStore } from '../../store/useStore'
 import { useEffect, useState } from 'react'
-import Score from '../utility/Score'
+import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
-import { httpGet, httpPost, tg, TTL } from '../../api'
-import PageLoader from '../utility/PageLoader'
 
-function ReferralPage() {
+import { useContentStore } from '@/store/useStore'
+
+import Score from '@/components/utility/Score'
+
+import IconStar from '@/assets/icons/icon-star.svg?react'
+import IconLink from '@/assets/icons/icon-link.svg?react'
+import IconUsers from '@/assets/icons/icon-users.svg?react'
+
+import { httpGet, httpPost, tg, TTL } from '@/api'
+
+export default function ReferralPage() {
     const { server } = useContentStore()
     const { t } = useTranslation()
     const [linkCopy, setLinkCopy] = useState(false)
@@ -121,5 +124,3 @@ function ReferralPage() {
         </div>
     )
 }
-
-export default ReferralPage

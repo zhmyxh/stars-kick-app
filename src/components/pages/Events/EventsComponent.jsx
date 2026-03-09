@@ -1,18 +1,20 @@
-import { useContentStore, useSettingsStore } from '../../store/useStore'
-import '../../styles/Events.css'
+import './_events.styles.css'
 
-import NotFound from "../utility/NotFound"
-import IconUsers from '../../assets/icons/icon-users.svg?react'
-import IconStar from '../../assets/icons/icon-star.svg?react'
-import IconAlterStar from '../../assets/icons/icon-alter-star.svg?react'
-import Score from './../utility/Score'
-
-import IconCalendar from '../../assets/icons/icon-calendar.svg?react'
-import { useEffect, useState } from 'react'
-import { httpGet, TTL, utcFormat } from '../../api'
 import { useTranslation } from 'react-i18next'
-import SmartImage from '../utility/SmartImage'
+import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
+
+import { useContentStore, useSettingsStore } from '@/store/useStore'
+
+import IconUsers from '@/assets/icons/icon-users.svg?react'
+import IconAlterStar from '@/assets/icons/icon-alter-star.svg?react'
+import IconCalendar from '@/assets/icons/icon-calendar.svg?react'
+
+import Score from '@/components/utility/Score'
+import SmartImage from '@/components/utility/SmartImage'
+import NotFound from "@/components/utility/NotFound"
+
+import { httpGet, TTL, utcFormat } from '@/api'
 
 function Event({ event }) {
     const { toggleModal } = useSettingsStore()
@@ -21,9 +23,11 @@ function Event({ event }) {
     return (
         <div className='event-box box' onClick={() => toggleModal('wager', event.event_id)}>
             <div style={{ display: 'flex', gap: 15 }}>
-                <div className='event-image'>
-                    <SmartImage src={event.image_payload} alt='Event icon' width={80} height={80} />
-                </div>
+                {event.image_payload && (
+                    <div id='event-image'>
+                        <SmartImage src={event.image_payload} alt='Event icon' width={80} height={80} />
+                    </div>
+                )}
                 <div className='event-info'>
                     <span className='header-text'>{event.question}</span>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
@@ -32,12 +36,13 @@ function Event({ event }) {
                     </div>
                 </div>
             </div>
-            <div className='event-wages'>
+            <div className='event-options'>
                 {event?.options && event.options.map((option, i) => (
-                    <div className={`event-wage ${i === 0 ? 'yes' : 'no'}`} key={i}>
+                    <div className='event-option' key={i}>
+                        {option.image_payload && <SmartImage src={option.image_payload} alt='Event icon' width={50} height={50} />}
                         <span className='secondary-text'>«{option.name}»</span>
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'end', gap: 6 }}>
-                            <div className={`event-wager-total ${i === 0 ? 'yes' : 'no'}`}>
+                        <div className='flex flex-col gap-[6px] items-end'>
+                            <div className='event-option-total'>
                                 <span className='header-text'>{option.percent}%</span>
                             </div>
                         </div>
@@ -52,7 +57,7 @@ function Event({ event }) {
     )
 }
 
-function EventsPage() {
+export default function EventsPage() {
     const { t } = useTranslation()
     const { server } = useContentStore()
     const [filter, setFilter] = useState('active')
@@ -64,20 +69,18 @@ function EventsPage() {
         cacheTime: TTL
     })
 
-    const events = (data?.events || []).slice().sort((a, b) =>
-        new Date(a.closed_at) - new Date(b.closed_at)
-    )
+    const events = data?.events || []
 
     return (
         <div id='events' className='app-page'>
             <div id='event-filters'>
                 <button className='button-alter'
-                    style={{ filter: filter === 'active' ? 'brightness(120%)' : 'none' }}
+                    style={{ opacity: filter === 'active' ? 1 : 0.6 }}
                     onClick={() => setFilter('active')}>
                     <span className='secondary-text'>{t('filter.active')}</span>
                 </button>
                 <button className='button-alter'
-                    style={{ filter: filter === 'resolved' ? 'brightness(110%)' : 'none' }}
+                    style={{ opacity: filter === 'resolved' ? 1 : 0.6 }}
                     onClick={() => setFilter('resolved')}>
                     <span className='secondary-text'>{t('filter.resolved')}</span>
                 </button>
@@ -94,5 +97,3 @@ function EventsPage() {
         </div>
     )
 }
-
-export default EventsPage

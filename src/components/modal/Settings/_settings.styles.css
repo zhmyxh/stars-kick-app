@@ -1,0 +1,28 @@
+#settings {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.option-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    background-color: var(--hover-back);
+    padding: 18px;
+    border-radius: 15px;
+}
+
+.option-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+#settings-app-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 5px;
+}

@@ -1,19 +1,10 @@
-/* @layer theme, base, components, utilities;
-@import "tailwindcss/theme" layer(theme);
-@import "tailwindcss/utilities" layer(utilities); */
-
 @import "tailwindcss";
 
 /* ------ font ------ */
 
-/* @font-face {
-    font-family: Inter;
-    src: url('../assets/fonts/Inter-VariableFont_opsz\,wght.ttf');
-} */
-
 @font-face {
     font-family: Geologica;
-    src: url('../assets/fonts/Geologica-VariableFont_CRSV\,SHRP\,slnt\,wght.ttf');
+    src: url('./assets/fonts/Geologica-VariableFont_CRSV\,SHRP\,slnt\,wght.ttf');
 }
 
 /* ------ roots ------ */
@@ -73,7 +64,7 @@
 /* ------ body ------ */
 
 html {
-    scrollbar-gutter: stable overlay; /* overlay — скроллбар поверх контента */
+    scrollbar-gutter: stable overlay;
 }
 
 body {
@@ -346,56 +337,6 @@ img {
     background-color: var(--hover-back);
 }
 
-#overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    box-sizing: border-box;
-    display: flex;
-    align-items: end;
-    justify-content: center;
-    background: rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(2px);
-    z-index: 10;
-}
-
-#modal {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    max-height: 700px;
-    border-radius: 15px 15px 0 0;
-    background-color: var(--default-back);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.364);
-    overflow: hidden;
-    transform: translateY(100%);
-    transition: transform 0.3s ease;
-}
-
-#modal.modal-open {
-  transform: translateY(0);
-}
-
-#modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 18px;
-}
-
-#modal-content {
-    display: flex;
-    flex-direction: column;
-    min-height: 230px;
-    padding-top: 0;
-    padding-inline: 18px;
-    padding-bottom: 18px;
-    box-sizing: border-box;
-}
-
 .select-wrapper {
     position: relative;
 }
@@ -446,6 +387,10 @@ img {
 }
 
 /* loaders */
+
+.loader-container {
+    display: flex;
+}
 
 .loader {
     position: absolute;
@@ -682,9 +627,9 @@ tr:nth-child(even) {
 
 #navigation {
     border-radius: 15px 15px 0 0;
+    padding: 10px 10px 25px 10px;
     display: flex;
     bottom: 0;
-    padding: 10px;
     gap: 10px;
     z-index: 3;
 }
