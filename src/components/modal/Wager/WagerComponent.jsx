@@ -330,6 +330,7 @@ function WagerSuccess() {
 
     useEffect(() => {
         queryClient.invalidateQueries({ queryKey: ['balance'] })
+        queryClient.invalidateQueries({ queryKey: ['wallet'] })
     }, [queryClient])
 
     return (
@@ -468,7 +469,7 @@ export default function Wager() {
                                         }
                                     </div>
                                 )}
-                                {step !== 3 && (
+                                {(step !== 3 && currentEvent?.status === 'OPEN') && (
                                     <div className="flex items-cetner gap-[15px]">
                                         {step !== 1 && (
                                             <div id="wager-page-buttons">

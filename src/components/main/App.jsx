@@ -12,8 +12,8 @@ const EventsPage = lazy(() => import("../pages/Events/EventsComponent.jsx"))
 const ReferralPage = lazy(() => import("../pages/Referral/ReferralComponent.jsx"))
 const ProfilePage = lazy(() => import("../pages/Profile/ProfileComponent.jsx"))
 
-const Deposit = lazy(() => import("../modal/D&W/DepositComponent.jsx"))
-const Withdraw = lazy(() => import("../modal/D&W/WithdrawComponent.jsx"))
+const Deposit = lazy(() => import("../modal/DW/DepositComponent.jsx"))
+const Withdraw = lazy(() => import("../modal/DW/WithdrawComponent.jsx"))
 const Rules = lazy(() => import("../modal/Rules/RulesComponents.jsx"))
 
 import { useContentStore, useSettingsStore, useUserStore } from "../../store/useStore"
