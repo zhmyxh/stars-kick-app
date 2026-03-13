@@ -6,7 +6,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import NotFound from '@/components/utility/NotFound'
 import Button from "@/components/utility/Button"
 import SmartImage from '@/components/utility/SmartImage'
-import { Event } from '../../pages/Events/EventsComponent'
+import { Event, EventStatus } from '../../pages/Events/EventsComponent'
 
 const RuleTemplate = ({ header, component, text }) => {
     const { t } = useTranslation()
@@ -48,16 +48,16 @@ const event = {
     event_id: 28,
     status: "OPEN",
     category: "MOMENTUM",
-    question: "Will Plush Pepe's price be more than 7k TON?",
-    image_payload: "https://cdn.changes.tg/gifts/models/Plush%20Pepe/png/Bavaria.png",
+    question: "Will the Durov’s Cap reach 750 TON during 7 days?",
+    image_payload: "https://cdn.changes.tg/gifts/models/Durov%27s%20Cap/png/Aurora.png",
     bets_close_at: "2026-03-13T01:05:00",
     closes_at: "2026-03-15T12:50:00",
     does_user_participate: false,
-    total_participants: 0,
-    total_pool: 0,
+    total_participants: 386,
+    total_pool: 6422,
     options: [
-        { option_id: 54, name: "Yes", percent: 0 },
-        { option_id: 55, name: "No", percent: 0 }
+        { option_id: 54, name: "Yes", percent: 67 },
+        { option_id: 55, name: "No", percent: 33 }
     ]
 };
 
@@ -72,17 +72,30 @@ const RuleStepB = () => {
     )
 }
 
+const RuleStepC = () => {
+    return (
+        <RuleTemplate
+            header='rule.header.stepC'
+            component={<div className='flex items-center gap-[10px] w-full h-[90px] justify-center'>
+                <EventStatus event={{ status: 'LOCKED' }} /><EventStatus event={{ status: 'RESOLVED' }} /><EventStatus event={{ status: 'CANCELLED' }} />
+            </div>}
+            text='rule.text.stepC'
+        />
+    )
+}
+
 export default function Rules() {
     const { t } = useTranslation()
     const [currentStep, setCurrentStep] = useState(1)
 
-    const maxStep = 2
-    const steps = [1, 2]
+    const steps = [1, 2, 3]
+    const maxStep = steps.length
 
     return (
         <div id="rules">
             {currentStep === 1 && <RuleStepA />}
             {currentStep === 2 && <RuleStepB />}
+            {currentStep === 3 && <RuleStepC />}
             <div id='rules-control' className='box'>
                 <div className='dots my-[15px]'>
                     {steps.map((s, i) => (
