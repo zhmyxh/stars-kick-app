@@ -7,7 +7,7 @@ function Score({ value, filled, color, icon, size }) {
             {icon && icon}
             {(value !== null && value !== undefined) ? (
                 <div style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <span className={color === 'white' ? 'white-text' : 'default-text'} style={{ fontWeight: 700, fontSize: size ? size : 16 }}>
+                    <span className={color === 'white' ? 'white-text' : 'default-text'} style={{ fontWeight: 700, fontSize: size ? size : 16, lineHeight: 0.7 }}>
                         {value}
                     </span>
                 </div>

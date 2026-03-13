@@ -386,11 +386,6 @@ img {
     color: var(--default-text);
 }
 
-/* loaders */
-
-
-
-
 .dots {
     display: flex;
     gap: 8px;
@@ -410,7 +405,7 @@ img {
 .dot.active {
     width: 24px;
     border-radius: 20px;
-    background: rgb(0, 135, 0);
+    background: var(--green);
     opacity: 1;
 }
 

@@ -66,7 +66,7 @@ export const useSettingsStore = create((set, get) => ({
     },
 
     // page routing
-    currentPage: 'events-page',
+    currentPage: 'profile-page',
     setPage: (page) => set({
         currentPage: page
     }),
@@ -101,11 +101,11 @@ export const useUserStore = create((set, get) => ({
         is_bot: false,
         first_name: "undefined",
         last_name: "undefined",
-        username: "User",
+        username: "user",
         language_code: "ru",
         is_premium: true,
         allows_write_to_pm: true,
-        photo_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIf4R5qPKHPNMyAqV-FjS_OTBB8pfUV29Phg&s"
+        photo_url: "https://lightwidget.com/wp-content/uploads/localhost-file-not-found.jpg"
     },
     loginUser: (user) => set({
         user: user
