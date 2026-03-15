@@ -161,8 +161,6 @@ export default function EventsPage() {
         return () => clearInterval(timer)
     }, [eventsRefreshSeconds])
 
-    const queryClient = useQueryClient();
-
     const handleRefresh = () => {
         if (canRefresh && !isFetching) {
             setRefreshSeconds(COOLDOWN_SEC)
@@ -172,23 +170,27 @@ export default function EventsPage() {
 
     return (
         <div id='events' className='app-page'>
-            <div id='event-filters'>
-                <div className='flex items-center gap-[10px]'>
-                    <button className='button-alter'
-                        style={{ opacity: filter === 'active' ? 1 : 0.6, minWidth: 90 }}
-                        onClick={() => { if (isSuccess) setFilter('active') }}>
-                        {isLoading ? <LoaderMini /> : <span className='secondary-text'>{t('filter.active')} ({activeCount})</span>}
-                    </button>
-                    <button className='button-alter'
-                        style={{ opacity: filter === 'resolved' ? 1 : 0.6, minWidth: 90 }}
-                        onClick={() => { if (isSuccess) setFilter('resolved') }}>
-                        {isLoading ? <LoaderMini /> : <span className='secondary-text'>{t('filter.resolved')}</span>}
-                    </button>
-                </div>
-                <button className='button-alter' onClick={handleRefresh} disabled={!canRefresh || isFetching} style={{ width: eventsRefreshSeconds !== 0 ? 90 : 'auto' }}>
-                    <IconRefresh className='icon-default' width={18} height={18} />
-                    {eventsRefreshSeconds !== 0 && <span className='secondary-text'>{eventsRefreshSeconds}{t('status.sec')}</span>}
-                </button>
+            <div id='event-navigation'>
+                {isLoading ? <LoaderMini /> : (
+                    <div id='events-filters'>
+                        <button className='button-alter'
+                            style={{ background: filter !== 'active' && 'none' }}
+                            onClick={() => { if (isSuccess) setFilter('active') }}>
+                            {isLoading ? <LoaderMini /> : <span className='secondary-text'>{t('filter.active')} ({activeCount})</span>}
+                        </button>
+                        <button className='button-alter'
+                            style={{ background: filter !== 'resolved' && 'none' }}
+                            onClick={() => { if (isSuccess) setFilter('resolved') }}>
+                            {isLoading ? <LoaderMini /> : <span className='secondary-text'>{t('filter.resolved')}</span>}
+                        </button>
+                        <button className='button-alter'
+                            style={{ width: eventsRefreshSeconds !== 0 ? 90 : 'auto' }}
+                            onClick={handleRefresh} disabled={!canRefresh || isFetching}>
+                            <IconRefresh className='icon-default' width={18} height={18} />
+                            {eventsRefreshSeconds !== 0 && <span className='secondary-text'>{eventsRefreshSeconds}{t('status.sec')}</span>}
+                        </button>
+                    </div>
+                )}
             </div>
             <div id='events-list'>
                 {

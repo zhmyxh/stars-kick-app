@@ -88,7 +88,7 @@
     gap: 10px;
 }
 
-#event-filters {
+#event-navigation {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -99,6 +99,26 @@
     padding: 8px 12px;
     border-radius: 20px;
     background-color: var(--default-back);
+}
+
+#events-filters {
+    display: flex;
+    align-items: center;
+    background-color: var(--default-back);
+    padding: 5px;
+    border-radius: 15px;
+    gap: 5px;
+}
+
+.filter-box {
+    display: flex;
+    padding: 8px 10px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.filter-box.selected {
+    background-color: var(--hover-back);
 }
 
 .event-block {
