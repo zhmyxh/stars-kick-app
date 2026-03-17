@@ -1,7 +1,7 @@
 import './_referral.styles.css'
 
 import { useEffect, useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 
 import { useContentStore } from '@/store/useStore'
@@ -12,7 +12,11 @@ import IconStar from '@/assets/icons/icon-star.svg?react'
 import IconLink from '@/assets/icons/icon-link.svg?react'
 import IconUsers from '@/assets/icons/icon-users.svg?react'
 
+import Button from "@/components/utility/Button"
+
 import { httpGet, httpPost, tg, TTL } from '@/api'
+import { useUserStore } from '../../../store/useStore'
+import { LoaderMini } from '../../utility/Loader/LoaderComponent'
 
 export default function ReferralPage() {
     const { server } = useContentStore()
@@ -59,7 +63,7 @@ export default function ReferralPage() {
 
     const handleShareLink = () => {
         if (referralLink) {
-            const messageText = t('referral.shareMessage')
+            const messageText = t('referral.message')
             const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(referralLink)}&text=${encodeURIComponent(messageText)}`
 
             if (tg.openTelegramLink) {
@@ -80,9 +84,26 @@ export default function ReferralPage() {
         }
     }
 
+    const [withdrawStatus, setWithdrawStatus] = useState(false)
+    const { balance, balanceUpdate, setBalance, addBalance } = useUserStore()
+
+    const queryClient = useQueryClient()
+    const updateReferralManually = (newData) => {
+        queryClient.setQueryData(['referral'], (oldData) => {
+            return {
+                ...oldData,
+                ...newData
+            }
+        })
+    }
+
     const handleWithdraw = async () => {
-        const withdrawBalance = await httpPost(server + 'referral/claim')
-        console.log(withdrawBalance)
+        if (referralBalance > 1) {
+            await httpPost(server + 'referral/claim')
+            const amountToTransfer = Math.floor(referralBalance)
+            addBalance(amountToTransfer)
+            updateReferralManually({ balance: referralBalance - amountToTransfer })
+        }
     }
 
     return (
@@ -116,9 +137,7 @@ export default function ReferralPage() {
                     <Score value={referralBalance} icon={<IconStar width={18} height={18} />} filled={true} />
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-                    <button className='button-main' onClick={handleWithdraw}>
-                        <span>{t('button.withdraw')}</span>
-                    </button>
+                    <Button name={withdrawStatus ? t('button.claimed') : t('button.claim')} type='main' action={handleWithdraw} />
                 </div>
             </div>
         </div>

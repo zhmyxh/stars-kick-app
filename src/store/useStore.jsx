@@ -17,47 +17,7 @@ const getInitialWarn = () => {
     return stored !== 'hidden'
 }
 
-export const usePlayStore = create((set, get) => ({
-    gameStatus: 'pre-start',
-    setGameStatus: (value) => set({ gameStatus: value }),
-
-    // current bet for play
-    totalBet: 0,
-    setTotalBet: () => {
-        const state = get()
-        const userState = useUserStore.getState()
-
-        const total = state.currentBet * state.currentMode
-        const ready = (total >= 10 && userState.balance >= total)
-        const warning = total < 10 ? 'warning.nobet' : (userState.balance < total ? 'warning.lowbalance' : '')
-
-        set({
-            totalBet: total,
-            readyToPlay: ready,
-            warning: warning
-        })
-    },
-
-    readyToPlay: false,
-    warning: '',
-
-    currentBet: 0,
-    currentMode: 0,
-
-    setBet: (value) => set({
-        currentBet: value
-    }),
-    setMode: (value) => set({
-        currentMode: value
-    }),
-
-    // demo
-    demoMode: false,
-    setDemoMode: () => set(state => ({ demoMode: !state.demoMode }))
-}))
-
 export const useSettingsStore = create((set, get) => ({
-    // app theme
     theme: getInitialTheme(),
 
     changeTheme: (value) => {
@@ -65,13 +25,11 @@ export const useSettingsStore = create((set, get) => ({
         set({ theme: value })
     },
 
-    // page routing
-    currentPage: 'profile-page',
+    currentPage: 'events-page',
     setPage: (page) => set({
         currentPage: page
     }),
 
-    //modal
     modalStatus: false,
     modalIndex: null,
     modalType: '',
@@ -81,7 +39,6 @@ export const useSettingsStore = create((set, get) => ({
         modalIndex: index || null
     })),
 
-    // language
     langList: ['en', 'ru'],
     lang: getInitialLang(),
     setLang: (lang) => {
@@ -89,12 +46,43 @@ export const useSettingsStore = create((set, get) => ({
         set({ lang: lang })
     },
 
-    // version
     version: '1.0.1'
 }))
 
 export const useUserStore = create((set, get) => ({
-    // user
+    balance: null,
+    balanceUpdate: 0,
+    setBalance: (value) => {
+        const currentBalance = get().balance
+        const updateValue = value - currentBalance
+
+        set({
+            balance: value,
+            balanceUpdate: updateValue
+        })
+
+        setTimeout(() => {
+            if (get().balanceUpdate === updateValue) {
+                set({ balanceUpdate: null })
+            }
+        }, 2000)
+    },
+    addBalance: (amountToAdd) => {
+        const currentBalance = get().balance
+        const newBalance = currentBalance + amountToAdd
+
+        set({
+            balance: newBalance,
+            balanceUpdate: amountToAdd
+        })
+
+        setTimeout(() => {
+            if (get().balanceUpdate === amountToAdd) {
+                set({ balanceUpdate: null })
+            }
+        }, 2000)
+    },
+
     user: {},
     undefinedUser: {
         id: 10000,
@@ -111,7 +99,6 @@ export const useUserStore = create((set, get) => ({
         user: user
     }),
 
-    // referrals
     referral: null,
     referralUpdatedAt: null,
 
@@ -121,7 +108,6 @@ export const useUserStore = create((set, get) => ({
             referralUpdatedAt: Date.now(),
         }),
 
-    // wager warning
     wagerWarning: getInitialWarn(),
     cancelWagerWarning: () => {
         localStorage.setItem('wagerWarning', 'hidden')
@@ -130,7 +116,6 @@ export const useUserStore = create((set, get) => ({
 }))
 
 export const useContentStore = create((set, get) => ({
-    // deposit
     depositPack: [
         { amount: 25, type: 'deposit' },
         { amount: 50, type: 'deposit' },
@@ -140,7 +125,6 @@ export const useContentStore = create((set, get) => ({
     depositFee: 0,
     depositMin: 25,
 
-    //withdraw
     withdrawPack: [
         { amount: 50, type: 'withdraw' },
         { amount: 75, type: 'withdraw' },
@@ -150,7 +134,6 @@ export const useContentStore = create((set, get) => ({
     withdrawFee: 0,
     withdrawMin: 50,
 
-    // api
     server: 'https://starskick-back.vercel.app/api/',
     botRelayerLink: 'https://t.me/blackjack_relayer'
 }))
@@ -180,4 +163,41 @@ export const useEventsStore = create((set) => ({
         if (value < 0) return
         set({ eventsRefreshSeconds: value })
     }
+}))
+
+export const usePlayStore = create((set, get) => ({
+    gameStatus: 'pre-start',
+    setGameStatus: (value) => set({ gameStatus: value }),
+
+    totalBet: 0,
+    setTotalBet: () => {
+        const state = get()
+        const userState = useUserStore.getState()
+
+        const total = state.currentBet * state.currentMode
+        const ready = (total >= 10 && userState.balance >= total)
+        const warning = total < 10 ? 'warning.nobet' : (userState.balance < total ? 'warning.lowbalance' : '')
+
+        set({
+            totalBet: total,
+            readyToPlay: ready,
+            warning: warning
+        })
+    },
+
+    readyToPlay: false,
+    warning: '',
+
+    currentBet: 0,
+    currentMode: 0,
+
+    setBet: (value) => set({
+        currentBet: value
+    }),
+    setMode: (value) => set({
+        currentMode: value
+    }),
+
+    demoMode: false,
+    setDemoMode: () => set(state => ({ demoMode: !state.demoMode }))
 }))
