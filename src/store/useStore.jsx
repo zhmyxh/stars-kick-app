@@ -52,40 +52,16 @@ export const useSettingsStore = create((set, get) => ({
 export const useUserStore = create((set, get) => ({
     balance: null,
     balanceUpdate: 0,
-    setBalance: (value) => {
-        const currentBalance = get().balance
-        const updateValue = value - currentBalance
-
-        set({
-            balance: value,
-            balanceUpdate: updateValue
-        })
-
-        setTimeout(() => {
-            if (get().balanceUpdate === updateValue) {
-                set({ balanceUpdate: null })
-            }
-        }, 2000)
-    },
+    setBalance: (value) => set({ balance: value }),
     addBalance: (amountToAdd) => {
         const currentBalance = get().balance
         const newBalance = currentBalance + amountToAdd
-
-        set({
-            balance: newBalance,
-            balanceUpdate: amountToAdd
-        })
-
-        setTimeout(() => {
-            if (get().balanceUpdate === amountToAdd) {
-                set({ balanceUpdate: null })
-            }
-        }, 2000)
+        set({ balance: newBalance })
     },
 
     user: {},
     undefinedUser: {
-        id: 10000,
+        id: 1,
         is_bot: false,
         first_name: "undefined",
         last_name: "undefined",

@@ -1,7 +1,7 @@
 import './_referral.styles.css'
 
 import { useEffect, useState } from 'react'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 
 import { useContentStore } from '@/store/useStore'
@@ -97,12 +97,31 @@ export default function ReferralPage() {
         })
     }
 
+    function claim() {
+        const amountToTransfer = Math.floor(referralBalance)
+        updateReferralManually({ balance: referralBalance - amountToTransfer })
+    }
+
+    const fetchReferralClaim = async () => {
+        return await httpPost(server + 'referral/claim')
+    }
+
+    const { mutate, isLoading } = useMutation({
+        mutationFn: fetchReferralClaim,
+        onSuccess: (responseData) => {
+            if (referralBalance > 1 && responseData) {
+                const newBalance = { total_balance: responseData.wallet_balance.total_balance }
+                queryClient.setQueryData(['balance'], newBalance)
+                claim()
+            }
+        }
+    })
+
     const handleWithdraw = async () => {
         if (referralBalance > 1) {
-            await httpPost(server + 'referral/claim')
-            const amountToTransfer = Math.floor(referralBalance)
             addBalance(amountToTransfer)
-            updateReferralManually({ balance: referralBalance - amountToTransfer })
+            claim()
+            mutate()
         }
     }
 

@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import { useMutation, useQuery } from "@tanstack/react-query"
+import { QueryCache, useMutation, useQuery } from "@tanstack/react-query"
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Suspense, lazy } from "react"
 import { useTranslation } from "react-i18next"
@@ -56,6 +56,10 @@ export default function App() {
         staleTime: TTL,
         cacheTime: TTL,
     })
+
+    useEffect(() => {
+        setBalance(balance?.total_balance)
+    }, [balance])
 
     const { mutate } = useMutation({
         mutationFn: fetchUser,
