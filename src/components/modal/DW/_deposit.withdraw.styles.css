@@ -10,6 +10,7 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+    margin-bottom: 190px;
 }
 
 .deposit-pack,
@@ -43,33 +44,81 @@
     height: 18px;
 }
 
-.pack-selected {
-    border-color: var(--invert-back);
-}
-
-.pack-selected::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 19px;
-    transform: translateY(-50%);
-    border-radius: 30px;
-    background-color: var(--invert-back);
-    width: 10px;
-    height: 10px;
-}
-
 #withdraw-info,
 #deposit-info {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 35px;
 }
 
 .withdraw-info-box,
 .deposit-info-box {
     display: flex;
     flex-direction: column;
+    gap: 5px;
+}
+
+#withdraw-menu {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%);
+    width: 95%;
+    border-radius: 5px;
+    padding: 25px 15px;
+    backdrop-filter: blur(5px);
+}
+
+#pack-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 10px;
-    width: 100px;
+    margin-bottom: 100px;
+}
+
+.pack-element {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 12px 14px;
+    gap: 12px;
+    border-radius: 15px;
+    background-color: var(--hover-back);
+    border: 2px solid;
+    border-color: var(--hover-back);
+    cursor: pointer;
+    overflow: hidden;
+    transition: 0.1s;
+}
+
+.pack-selected {
+    border-color: var(--default-border);
+    background-color: var(--active-back);
+}
+
+.pack-unavailable {
+    opacity: 1;
+}
+
+.pack-unavailable {
+    opacity: 0.4;
+}
+
+.pack-mark {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    border-radius: 30px;
+    padding: 6px 8px;
+}
+
+.pack-mark#pack-favorite {
+    background-color: rgb(239, 37, 148);
+}
+
+.pack-mark#pack-best {
+    background-color: var(--green);
 }

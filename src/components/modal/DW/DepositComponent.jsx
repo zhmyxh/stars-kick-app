@@ -5,6 +5,7 @@ import { useContentStore, useUserStore } from '@/store/useStore'
 import IconStar from '@/assets/icons/icon-star.svg?react'
 import Score from '@/components/utility/Score'
 import { Trans, useTranslation } from 'react-i18next'
+import NotFound from "@/components/utility/NotFound"
 
 export default function Deposit() {
     const { depositPack, depositFee, depositMin } = useContentStore()
@@ -25,7 +26,8 @@ export default function Deposit() {
 
     return (
         <div id="deposit">
-            <span className='secondary-text'>{t('definition.deposit')}</span>
+            <NotFound />
+            {/* <span className='secondary-text'>{t('definition.deposit')}</span>
             <div id='deposit-list'>
                 {depositPack.map((pack, i) => {
                     const id = pack.amount + 'stars'
@@ -45,7 +47,7 @@ export default function Deposit() {
                 <button className='button-secondary' style={{ width: '100%' }} onClick={handleClear}>
                     <span>{t('button.clear')}</span>
                 </button>
-            </div>
+            </div> */}
         </div>
     )
 }
