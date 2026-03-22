@@ -12,16 +12,15 @@
 }
 
 #rules-component {
-    padding: 5px;
-    border-radius: 20px;
-    background-color: var(--hover-back);
     min-height: 100px;
 }
 
 #rules-control {
     position: fixed;
     bottom: 0;
-    left: 0;
-    width: 100%;
+    left: 50%;
+    transform: translate(-50%);
+    width: 95%;
     border-radius: 0;
+    padding-bottom: 25px;
 }

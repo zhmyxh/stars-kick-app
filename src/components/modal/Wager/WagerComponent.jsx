@@ -195,6 +195,7 @@ function WagerTitle({ event, handleStep, setCurrentOption }) {
 function WagerBuy({ currentOption, event, setPaymentStatus, handleStep, setUpdatedEvent, setReceipt }) {
     const { t } = useTranslation()
     const { server } = useContentStore()
+    const { setBalance, balance } = useUserStore()
 
     const [amount, setAmount] = useState(0)
     const maxAmount = 500
@@ -271,6 +272,11 @@ function WagerBuy({ currentOption, event, setPaymentStatus, handleStep, setUpdat
         mutate()
     }
 
+    const [availible, setAvailible] = useState(false)
+    useEffect(() => {
+        setAvailible(!amount || balance < 5 || balance < amount)
+    }, [amount, balance])
+
     return (
         <div id="wager-buy">
             <div id="wager-info">
@@ -301,7 +307,7 @@ function WagerBuy({ currentOption, event, setPaymentStatus, handleStep, setUpdat
                 </div>
             </div>
             <div className="flex flex-col gap-5">
-                <button className='button-main b-b' style={{ width: '100%' }} disabled={!amount} onClick={placeWager}>
+                <button className='button-main b-b' style={{ width: '100%' }} disabled={availible} onClick={placeWager}>
                     <span className="white-text">{t('header.placeabet')}</span>
                     <Score value={amount} icon={<IconStar width={18} height={18} />} color={'white'} />
                 </button>
