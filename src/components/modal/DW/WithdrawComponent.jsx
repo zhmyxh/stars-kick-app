@@ -5,13 +5,13 @@ import { Trans, useTranslation } from 'react-i18next'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { useContentStore, useUserStore } from '@/store/useStore'
+import { Loader } from '../../utility/Loader/LoaderComponent'
 import { httpPost } from '@/api'
 
 import IconStar from '@/assets/icons/icon-star.svg?react'
 import Score from '@/components/utility/Score'
 import IconWin from '@/assets/icons/play-icons/icon-win.svg?react'
 import IconLose from '@/assets/icons/play-icons/icon-lose.svg?react'
-import { Loader } from '../../utility/Loader/LoaderComponent'
 import SmartImage from "@/components/utility/SmartImage"
 import IconAv from '@/assets/icons/icon-av.svg?react'
 import IconLock from '@/assets/icons/icon-lock.svg?react'
@@ -44,7 +44,7 @@ const WithdrawList = ({ amount, setAmount }) => {
                         className={`pack-element ${check ? 'pack-selected' : ''} ${pack.status === 'status.available' ? 'pack-available' : 'pack-unavailable'}`}
                         onClick={() => handleSelectPack(pack.amount, pack.id, pack.status)}>
                         <div className='flex w-fit'>
-                            <SmartImage src='src/assets/images/star-pack.png' width={50} height={50} />
+                            <SmartImage src='./star-pack.png' width={50} height={50} />
                         </div>
                         <div className='flex flex-col gap-[5px] items-start'>
                             <Score value={pack.amount} icon={<IconStar width={18} height={18} />} />

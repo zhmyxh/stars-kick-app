@@ -56,7 +56,7 @@ function Settings() {
             </div>
             <div className="line"></div>
             <div id="settings-app-info">
-                <span className="secondary-text">{t("header.appversion")}: <b>beta {version}</b></span>
+                <span className="secondary-text">{t("header.appversion")}: <b>{version}</b></span>
                 <span className="secondary-text" style={{ fontWeight: 500 }}>© Copyright, 2026</span>
             </div>
         </div>
