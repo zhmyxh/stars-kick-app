@@ -9,11 +9,11 @@ export const ScoreUpdate = () => {
     const [save, setSave] = useState()
 
     useEffect(() => {
-        if (balanceUpdate > 0) setSave(balanceUpdate)
+        if (balanceUpdate !== 0) setSave(balanceUpdate)
     }, [balanceUpdate])
 
     return (
-        <div id="score-update" style={{ opacity: balanceUpdate ? 0.6 : 0 }}>
+        <div id="score-update" style={{ opacity: balanceUpdate !== 0 ? 0.6 : 0 }}>
             <IconAlterStar className='icon-invert' width={16} height={16} />
             <span className='white-text' style={{ fontSize: 14 }}>{save > 0 ? '+' : ''}{save}</span>
         </div>

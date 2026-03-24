@@ -11,17 +11,16 @@ import { useTranslation } from 'react-i18next'
 import { useQueryClient } from '@tanstack/react-query'
 
 function Panel() {
-    const { theme, changeTheme } = useSettingsStore()
-    const { balance } = useUserStore()
-    const { toggleModal } = useSettingsStore()
+    const { theme, changeTheme, toggleModal } = useSettingsStore()
+    const { balance, setBalance } = useUserStore()
     const { t } = useTranslation()
 
     const queryClient = useQueryClient()
-    const wallet = queryClient.getQueryData(['balance'])
+    const balanceUpdate = queryClient.getQueryData(['balance'])
 
-    const handleTheme = () => {
-        changeTheme(theme === 'light' ? 'dark' : 'light')
-    }
+    useEffect(() => {
+        if (balanceUpdate) setBalance(balanceUpdate.total_balance)
+    }, [balanceUpdate])
 
     return (
         <div id="panel">
@@ -29,7 +28,7 @@ function Panel() {
                 <IconDeposit className='icon-invert' width={20} height={20} />
                 <span className="white-text">{t('button.deposit')}</span>
             </button>
-            <Score value={wallet?.total_balance} icon={<IconStar width={18} height={18} />} filled={true} />
+            <Score value={balance} icon={<IconStar width={18} height={18} />} filled={true} />
         </div>
     )
 }
