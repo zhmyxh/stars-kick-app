@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useUserStore } from '../../store/useStore'
-import { LoaderMini } from './Loader/LoaderComponent'
+import { LoaderMini } from '../special/Loader/LoaderComponent'
 
 import IconAlterStar from '@/assets/icons/icon-alter-star.svg?react'
 

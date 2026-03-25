@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react"
-import { LoaderMini } from "./Loader/LoaderComponent"
+import { LoaderMini } from "../special/Loader/LoaderComponent"
 
 function SmartImage({
     src,
