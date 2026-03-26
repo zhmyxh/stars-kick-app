@@ -5,7 +5,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { useContentStore, useUserStore } from '@/store/useStore'
-import { Loader } from '../../utility/Loader/LoaderComponent'
+import { Loader } from '../../special/Loader/LoaderComponent'
 import { httpPost } from '@/api'
 
 import IconStar from '@/assets/icons/icon-star.svg?react'
@@ -17,6 +17,8 @@ import IconAv from '@/assets/icons/icon-av.svg?react'
 import IconLock from '@/assets/icons/icon-lock.svg?react'
 import IconHeart from '@/assets/icons/icon-heart.svg?react'
 import IconBest from '@/assets/icons/icon-best.svg?react'
+import { useSettingsStore } from '../../../store/useStore'
+import Button from '@/components/utility/Button'
 
 const WithdrawList = ({ amount, setAmount }) => {
     const { t } = useTranslation()
@@ -35,9 +37,19 @@ const WithdrawList = ({ amount, setAmount }) => {
         handleSelectPack(best.amount, best.id, best.status)
     }, [])
 
+    const sortedPack = withdrawPack.sort((a, b) => {
+        if (a.status === 'status.available' && b.status === 'status.unavailable') {
+            return -1
+        }
+        if (a.status === 'status.unavailable' && b.status === 'status.available') {
+            return 1
+        }
+        return 0
+    })
+
     return (
         <div id='pack-list'>
-            {withdrawPack.map(pack => {
+            {sortedPack.map(pack => {
                 const check = selected === pack.id
                 return (
                     <div key={pack.id}
@@ -84,6 +96,7 @@ const WithdrawPending = ({ setStatus, amount, setAmount }) => {
     const { server } = useContentStore()
     const { withdrawPack, withdrawFee } = useContentStore()
     const { t } = useTranslation()
+    const { editModalCloseMode } = useSettingsStore()
 
     const [ableToWith, setAbleToWith] = useState(false)
 
@@ -95,13 +108,17 @@ const WithdrawPending = ({ setStatus, amount, setAmount }) => {
 
     const { mutate, isLoading } = useMutation({
         mutationFn: fetchWithdrawPayment,
-        onMutate: () => setStatus({ key: 'loading', text: 'status.withloading' }),
+        onMutate: () => {
+            editModalCloseMode(false)
+            setStatus({ key: 'loading' })
+        },
         onSuccess: () => {
+            editModalCloseMode(true)
             addBalance(-amount)
             queryClient.invalidateQueries({ queryKey: ['wallet'] })
-            setStatus({ key: 'success', text: 'status.withsuccess' })
+            setStatus({ key: 'success' })
         },
-        onError: (err) => setStatus({ key: 'error', text: err })
+        onError: (err) => setStatus({ key: 'error' })
     })
 
     const handleWithdraw = () => {
@@ -135,8 +152,8 @@ const WithdrawPending = ({ setStatus, amount, setAmount }) => {
                 </div>
             </div>
             <WithdrawList amount={amount} setAmount={setAmount} />
-            <div id='withdraw-menu' className='flex flex-col gap-[5px]'>
-                <button className='button-main b-b' style={{ width: '100%' }} disabled={!ableToWith} onClick={handleWithdraw}>
+            <div id='withdraw-menu' className='flex flex-col items-center gap-[5px]'>
+                <button className='button-main b-b' style={{ width: '95%' }} disabled={!ableToWith} onClick={handleWithdraw}>
                     <span className="white-text">{ableToWith ? t('button.withdraw') : t('warning.youcannotwithdraw')}</span>
                     {ableToWith && <Score value={amount} color={'white'} icon={<IconStar width={18} height={18} />} />}
                 </button>
@@ -145,34 +162,39 @@ const WithdrawPending = ({ setStatus, amount, setAmount }) => {
     )
 }
 
-const WithdrawSuccess = ({ setStatus, amount, setAmount }) => {
+const WithdrawStatus = ({ status, setStatus, amount, setAmount }) => {
     const { t } = useTranslation()
+    const defaultClass = 'flex flex-col items-center justify-center gap-[25px]'
 
     return (
-        <div className="flex flex-col items-center justify-center gap-[25px]" style={{ height: 200 }}>
-            <IconWin width={50} height={50} />
-            <div className='flex flex-col gap-[10px] items-center'>
-                <div className='flex flex-col gap-[5px] items-center'>
-                    <span className="secondary-text">{t('header.withstatus')}</span>
-                    <span className="header-text">{t('header.success')}</span>
-                </div>
-                <Score value={amount} icon={<IconStar width={18} height={18} />} filled={true} />
-            </div>
-        </div>
-    )
-}
+        <div className="flex flex-col items-center justify-center gap-[25px] pb-[15px]">
 
-const WithdrawFailed = ({ status, setStatus, amount, setAmount }) => {
-    const { t } = useTranslation()
+            <div className='flex items-center justify-center' style={{ height: 250 }}>
+                {status.key === 'success' && (
+                    <div className={defaultClass}>
+                        <IconWin width={50} height={50} />
+                        <div className='flex flex-col gap-[10px] items-center'>
+                            <div className='flex flex-col gap-[5px] items-center'>
+                                <span className="secondary-text">{t('header.paymentstatus')}</span>
+                                <span className="header-text">{t('header.success')}</span>
+                            </div>
+                            <Score value={amount} icon={<IconStar width={18} height={18} />} filled={true} />
+                        </div>
+                    </div>
+                )}
 
-    return (
-        <div className="flex flex-col items-center justify-center gap-[25px]" style={{ height: 200 }}>
-            <IconLose width={50} height={50} />
-            <div className="flex flex-col gap-[5px] items-center">
-                <span className="secondary-text">{t('header.paymentstatus')}</span>
-                <span className="header-text">{t('header.failed')}</span>
-                <span className="secondary-text">{status.text}</span>
+                {status.key === 'failed' && (
+                    <div className={defaultClass}>
+                        <IconLose width={50} height={50} />
+                        <div className="flex flex-col gap-[5px] items-center">
+                            <span className="secondary-text">{t('header.paymentstatus')}</span>
+                            <span className="header-text">{t('header.failed')}</span>
+                        </div>
+                    </div>
+                )}
             </div>
+
+            <Button name={t('button.back')} type='main' color='b-b' wd={true} action={() => setStatus({ key: 'pending' })} />
         </div>
     )
 }
@@ -180,19 +202,17 @@ const WithdrawFailed = ({ status, setStatus, amount, setAmount }) => {
 export default function Withdraw() {
     const { t } = useTranslation()
 
-    const [status, setStatus] = useState({ key: 'pending', text: '' })
+    const [status, setStatus] = useState({ key: 'pending' })
     const [amount, setAmount] = useState(0)
 
     return (
         <div id="withdraw">
-            {status.key === 'pending' &&
-                <WithdrawPending setStatus={setStatus} amount={amount} setAmount={setAmount} />}
-            {status.key === 'success' &&
-                <WithdrawSuccess setStatus={setStatus} amount={amount} setAmount={setAmount} />}
-            {status.key === 'failed' &&
-                <WithdrawFailed status={status} setStatus={setStatus} amount={amount} setAmount={setAmount} />}
-            {status.key === 'loading' &&
-                <Loader text={t('loader.payment')} />}
+            {
+                status.key === 'pending'
+                    ? <WithdrawPending status={status} setStatus={setStatus} amount={amount} setAmount={setAmount} />
+                    : status.key === 'loading' ? <Loader text={t('loader.payment')} />
+                        : <WithdrawStatus status={status} setStatus={setStatus} amount={amount} setAmount={setAmount} />
+            }
         </div>
     )
 }

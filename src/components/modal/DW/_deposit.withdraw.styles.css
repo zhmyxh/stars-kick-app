@@ -58,15 +58,17 @@
     gap: 5px;
 }
 
-#withdraw-menu {
+#withdraw-menu,
+#deposit-menu {
     position: fixed;
     bottom: 0;
     left: 50%;
     transform: translate(-50%);
     width: 95%;
-    border-radius: 5px;
-    padding: 25px 15px;
+    padding-inline: 15px;
+    padding-block: 25px 40px;
     backdrop-filter: blur(5px);
+    background-color: var(--default-back-tr);
 }
 
 #pack-list {
@@ -121,4 +123,8 @@
 
 .pack-mark#pack-best {
     background-color: var(--green);
+}
+
+.pack-mark#pack-test {
+    background-color: rgb(204, 114, 24);
 }
