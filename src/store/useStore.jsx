@@ -17,6 +17,19 @@ const getInitialWarn = () => {
     return stored !== 'hidden'
 }
 
+const syncFavoritePack = (id) => {
+    if (typeof window === 'undefined') return null
+
+    const storedId = localStorage.getItem('favoritePackId')
+
+    if (!storedId) {
+        localStorage.setItem('favoritePackId', id)
+        return id
+    }
+
+    return storedId
+}
+
 export const useSettingsStore = create((set, get) => ({
     theme: getInitialTheme(),
 
@@ -32,12 +45,17 @@ export const useSettingsStore = create((set, get) => ({
 
     modalStatus: false,
     modalIndex: null,
+    modalClose: null,
     modalType: '',
-    toggleModal: (type, index) => set(state => ({
+    toggleModal: (type, index, close) => set(state => ({
         modalStatus: !state.modalStatus,
         modalType: type || '',
-        modalIndex: index || null
+        modalIndex: index || null,
+        modalClose: true
     })),
+    editModalCloseMode: (close) => set({
+        modalClose: close
+    }),
 
     langList: ['en', 'ru'],
     lang: getInitialLang(),
@@ -46,7 +64,7 @@ export const useSettingsStore = create((set, get) => ({
         set({ lang: lang })
     },
 
-    version: '1.0.1'
+    version: '1.3.2 Alpha'
 }))
 
 export const useUserStore = create((set, get) => ({
@@ -59,7 +77,7 @@ export const useUserStore = create((set, get) => ({
         set({ balance: newBalance })
     },
 
-    user: {},
+    user: null,
     undefinedUser: {
         id: 1,
         is_bot: false,
@@ -93,19 +111,30 @@ export const useUserStore = create((set, get) => ({
 
 export const useContentStore = create((set, get) => ({
     depositPack: [
-        { amount: 25, type: 'deposit' },
-        { amount: 50, type: 'deposit' },
-        { amount: 75, type: 'deposit' },
-        { amount: 100, type: 'deposit' }
+        { id: 1142, amount: 1, status: 'status.available', quotation: 0, mark: 'mark.test' },
+        { id: 5432, amount: 50, status: 'status.available', quotation: 1.0, mark: null },
+        { id: 9395, amount: 200, status: 'status.available', quotation: 4.0, mark: null },
+        { id: 7651, amount: 350, status: 'status.available', quotation: 7.0, mark: 'mark.best' },
+        { id: 1473, amount: 500, status: 'status.available', quotation: 10.0, mark: null },
+        { id: 2590, amount: 750, status: 'status.available', quotation: 15.0, mark: null },
+        { id: 3611, amount: 1000, status: 'status.available', quotation: 20.0, mark: null },
+        { id: 3266, amount: 2500, status: 'status.unavailable', quotation: 50.0, mark: null },
+        { id: 3378, amount: 5000, status: 'status.unavailable', quotation: 100.0, mark: null },
+        { id: 1368, amount: 10000, status: 'status.unavailable', quotation: 200.0, mark: null },
     ],
     depositFee: 0,
     depositMin: 25,
 
     withdrawPack: [
-        { amount: 50, type: 'withdraw' },
-        { amount: 75, type: 'withdraw' },
-        { amount: 100, type: 'withdraw' },
-        { amount: 125, type: 'withdraw' }
+        { id: 4829, amount: 50, status: 'status.available', quotation: 1.0, mark: null },
+        { id: 1053, amount: 200, status: 'status.available', quotation: 4.0, mark: 'mark.best' },
+        { id: 8274, amount: 350, status: 'status.available', quotation: 7.0, mark: null },
+        { id: 3391, amount: 500, status: 'status.available', quotation: 10.0, mark: null },
+        { id: 6102, amount: 750, status: 'status.available', quotation: 15.0, mark: null },
+        { id: 9485, amount: 1000, status: 'status.available', quotation: 20.0, mark: null },
+        { id: 2716, amount: 2500, status: 'status.unavailable', quotation: 50.0, mark: null },
+        { id: 5540, amount: 5000, status: 'status.unavailable', quotation: 100.0, mark: null },
+        { id: 8832, amount: 10000, status: 'status.unavailable', quotation: 200.0, mark: null },
     ],
     withdrawFee: 0,
     withdrawMin: 50,

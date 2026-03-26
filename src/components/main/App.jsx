@@ -5,7 +5,7 @@ import { Suspense, lazy } from "react"
 import { useTranslation } from "react-i18next"
 import i18n from './../../i18n'
 
-import { httpGet, httpPost, tg, TTL } from "../../api"
+import { httpGet, httpPost, tg, tgInitUser, TTL } from "../../api"
 
 const GiftsPage = lazy(() => import("../pages/Gifts/GiftsComponent.jsx"))
 const EventsPage = lazy(() => import("../pages/Events/EventsComponent.jsx"))
@@ -21,7 +21,7 @@ import { useContentStore, useSettingsStore, useUserStore } from "../../store/use
 import Settings from '../modal/Settings/SettingsComponent.jsx'
 import Panel from "../utility/Panel"
 import Navigation from "../utility/Navigation"
-import Modal from "../utility/Modal/ModalComponent.jsx"
+import Modal from "../special/Modal/ModalComponent.jsx"
 import PageLoader from "../utility/PageLoader"
 import Wager from "../modal/Wager/WagerComponent.jsx"
 
@@ -66,14 +66,16 @@ export default function App() {
     })
 
     useEffect(() => {
-        mutate()
+        if (!user) {
+            mutate()
+        }
 
-        if (tg?.initDataUnsafe?.user) {
-            loginUser(tg.initDataUnsafe.user)
+        if (tgInitUser) {
+            loginUser(tgInitUser)
         } else {
             loginUser(undefinedUser)
         }
-    }, [])
+    }, [user])
 
     useEffect(() => {
         i18n.changeLanguage(lang)

@@ -7,6 +7,27 @@ import { createRoot } from 'react-dom/client'
 
 import App from './components/main/App'
 
+import { init, miniApp, viewport } from '@telegram-apps/sdk';
+
+function startApp() {
+  try {
+    init()
+
+    if (miniApp.ready.isAvailable()) {
+      miniApp.ready()
+    }
+
+    if (viewport.mount.isAvailable()) {
+      viewport.mount()
+    }
+
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+startApp()
+
 const queryClient = new QueryClient()
 
 createRoot(document.getElementById('root')).render(
