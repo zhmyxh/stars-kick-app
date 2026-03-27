@@ -189,14 +189,24 @@ const DepositPending = ({ setStatus, amount, setAmount }) => {
 
 const DepositStatus = ({ status, setStatus, amount, setAmount }) => {
     const { t } = useTranslation()
+    const { editModalCloseMode } = useSettingsStore()
+
     const defaultClass = 'flex flex-col items-center justify-center gap-[25px]'
+
+    useEffect(() => {
+        if (status.key === 'confirming') {
+            editModalCloseMode(false)
+        } else {
+            editModalCloseMode(true)
+        }
+    }, [status])
 
     return (
         <div className="flex flex-col items-center justify-center gap-[25px] pb-[15px]">
 
-            <div className='flex items-center justify-center' style={{ height: 250 }}>
+            <div className='flex items-center justify-center' style={{ minHeight: 250 }}>
                 {status.key === 'confirming' && (
-                    <div className={defaultClass}>
+                    <div className={defaultClass} style={{ height: 500 }}>
                         <span className="secondary-text">{t('header.waitingforconfirm')}</span>
                         <LoaderMini />
                     </div>
@@ -244,7 +254,7 @@ export default function Deposit() {
             {
                 status.key === 'pending'
                     ? <DepositPending status={status} setStatus={setStatus} amount={amount} setAmount={setAmount} />
-                    : status.key === 'loading' ? <Loader text={t('loader.payment')} />
+                    : status.key === 'loading' ? <Loader text={t('loader.depositloading')} />
                         : <DepositStatus status={status} setStatus={setStatus} amount={amount} setAmount={setAmount} />
             }
         </div>
