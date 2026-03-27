@@ -20,7 +20,7 @@ import SmartImage from '@/components/utility/SmartImage'
 import NotFound from "@/components/utility/NotFound"
 
 import { httpGet, TTL, utcFormat } from '@/api'
-import { Loader, LoaderMini } from '../../utility/Loader/LoaderComponent'
+import { Loader, LoaderMini } from '../../special/Loader/LoaderComponent'
 import { useEventsStore } from '../../../store/useStore'
 import { truncate, useEventsFromCache } from '../../../api'
 

@@ -27,7 +27,7 @@ function SmartImage({
     }, [src])
 
     return (
-        <div style={{ position: "relative", display: "flex", justifyContent: 'center', alignItems: 'center', width: '100%', boxSizing: 'border-box' }}>
+        <div style={{ position: "relative", display: "flex", justifyContent: 'center', alignItems: 'center', width: '100%', boxSizing: 'border-box', minHeight: props.height }}>
             {!loaded && !error && (
                 loader || (
                     <LoaderMini />

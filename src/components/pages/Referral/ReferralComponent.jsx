@@ -16,7 +16,7 @@ import Button from "@/components/utility/Button"
 
 import { httpGet, httpPost, tg, TTL } from '@/api'
 import { useUserStore } from '../../../store/useStore'
-import { LoaderMini } from '../../utility/Loader/LoaderComponent'
+import { LoaderMini } from '../../special/Loader/LoaderComponent'
 
 export default function ReferralPage() {
     const { server } = useContentStore()
@@ -119,7 +119,7 @@ export default function ReferralPage() {
 
     const handleWithdraw = async () => {
         if (referralBalance > 1) {
-            addBalance(amountToTransfer)
+            addBalance(Math.floor(referralBalance))
             claim()
             mutate()
         }
@@ -155,9 +155,7 @@ export default function ReferralPage() {
                     <span className='secondary-text'>{t('header.referralbalance')}</span>
                     <Score value={referralBalance} icon={<IconStar width={18} height={18} />} filled={true} />
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-                    <Button name={withdrawStatus ? t('button.claimed') : t('button.claim')} type='main' action={handleWithdraw} />
-                </div>
+                {referralBalance > 1 && <Button name={withdrawStatus ? t('button.claimed') : t('button.claim')} type='main' action={handleWithdraw} />}
             </div>
         </div>
     )

@@ -1,8 +1,16 @@
-import { initData } from '@telegram-apps/sdk'
+import { init, retrieveLaunchParams } from '@telegram-apps/sdk'
+
+init()
+
+let launchParams = {}
+try {
+    launchParams = retrieveLaunchParams()
+} catch (e) {
+    console.warn("Launch params not found, using fallback")
+}
 
 export const tg = window.Telegram?.WebApp
-export const tgInitUser = initData.user()
-export const tgInitData = initData.raw() || "query_id=AAESMk01AAAAABIyTTUgaVdC&user=%7B%22id%22%3A894251538%2C%22first_name%22%3A%22Egor%22%2C%22last_name%22%3A%22%22%2C%22username%22%3A%22zhmyx_h%22%2C%22language_code%22%3A%22en%22%2C%22allows_write_to_pm%22%3Atrue%2C%22photo_url%22%3A%22https%3A%5C%2F%5C%2Ft.me%5C%2Fi%5C%2Fuserpic%5C%2F320%5C%2FoN4NlSrCXK0YLXcRJj52h1rhnUKL5p_5338IODK5baU.svg%22%7D&auth_date=1774557240&signature=g9c4elNgR2DPW8Miw2UW1NNdO4NGZ_qZnQbxkvaBWoGoLvxFKNHzBFejiD2wzM_3Rop3X9p9A-jQHeqksiR5AA&hash=7dfd0dcfefcaba0d0de639c5ddc059232a3413cbf149efda9be5f7c93fd70cc3"
+export const tgInitData = launchParams.initDataRaw || "query_id=AAESMk01AAAAABIyTTUgaVdC&user=%7B%22id%22%3A894251538%2C%22first_name%22%3A%22Egor%22%2C%22last_name%22%3A%22%22%2C%22username%22%3A%22zhmyx_h%22%2C%22language_code%22%3A%22en%22%2C%22allows_write_to_pm%22%3Atrue%2C%22photo_url%22%3A%22https%3A%5C%2F%5C%2Ft.me%5C%2Fi%5C%2Fuserpic%5C%2F320%5C%2FoN4NlSrCXK0YLXcRJj52h1rhnUKL5p_5338IODK5baU.svg%22%7D&auth_date=1774557240&signature=g9c4elNgR2DPW8Miw2UW1NNdO4NGZ_qZnQbxkvaBWoGoLvxFKNHzBFejiD2wzM_3Rop3X9p9A-jQHeqksiR5AA&hash=7dfd0dcfefcaba0d0de639c5ddc059232a3413cbf149efda9be5f7c93fd70cc3"
 export const TTL = 1000 * 60 * 5
 
 const DEFAULT_TIMEOUT = 10000

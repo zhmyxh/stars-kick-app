@@ -12,7 +12,7 @@ const RuleTemplate = ({ header, component, text }) => {
     const { t } = useTranslation()
 
     return (
-        <div id="rule-box" className='mb-[115px]'>
+        <div id="rule-box" className='mb-[135px]'>
             <div id='rules-component' className='mb-[15px]'>
                 {component}
             </div>

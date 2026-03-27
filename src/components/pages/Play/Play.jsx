@@ -19,10 +19,10 @@ import IconTie from '../../assets/icons/play-icons/icon-tie.svg?react'
 import IconRules from '../../assets/icons/icon-rules.svg?react'
 
 import { useEffect, useState } from 'react'
-import { usePlayStore, useSettingsStore, useUserStore } from '../../store/useStore'
-import Header from '../utility/Header'
+import { usePlayStore, useSettingsStore, useUserStore } from '../../../store/useStore'
+import Header from '../../utility/Header'
 import { useTranslation } from 'react-i18next'
-import Score from '../utility/Score'
+import Score from '../../utility/Score'
 
 function ModeBox({ array, current, action, name, hint, select, children }) {
     return (

@@ -25,7 +25,7 @@ import IconAlterStar from '@/assets/icons/icon-alter-star.svg?react'
 import IconWin from '@/assets/icons/play-icons/icon-win.svg?react'
 import IconLose from '@/assets/icons/play-icons/icon-lose.svg?react'
 
-import { Loader } from '../../utility/Loader/LoaderComponent'
+import { Loader } from '../../special/Loader/LoaderComponent'
 import { truncate } from '@/api'
 import { EventStatus } from '../../pages/Events/EventsComponent'
 
@@ -196,6 +196,7 @@ function WagerBuy({ currentOption, event, setPaymentStatus, handleStep, setUpdat
     const { t } = useTranslation()
     const { server } = useContentStore()
     const { setBalance, balance } = useUserStore()
+    const { editModalCloseMode } = useSettingsStore()
 
     const [amount, setAmount] = useState(0)
     const maxAmount = 500
@@ -234,7 +235,10 @@ function WagerBuy({ currentOption, event, setPaymentStatus, handleStep, setUpdat
 
     const { mutate, isLoading } = useMutation({
         mutationFn: fetchPlaceWager,
-        onMutate: () => setPaymentStatus('loading'),
+        onMutate: () => {
+            setPaymentStatus('loading')
+            editModalCloseMode(false)
+        },
         onSuccess: (responseData) => {
             if (responseData.wallet_balance) {
                 const balance = { total_balance: responseData.wallet_balance.total_balance }
@@ -261,6 +265,7 @@ function WagerBuy({ currentOption, event, setPaymentStatus, handleStep, setUpdat
                 })
             }
             setPaymentStatus('success')
+            editModalCloseMode(true)
         },
         onError: (err) => {
             setPaymentStatus('failed')

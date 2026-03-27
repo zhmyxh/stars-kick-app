@@ -4,8 +4,9 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Suspense, lazy } from "react"
 import { useTranslation } from "react-i18next"
 import i18n from './../../i18n'
+import { init, retrieveLaunchParams } from '@telegram-apps/sdk'
 
-import { httpGet, httpPost, tg, tgInitUser, TTL } from "../../api"
+import { httpGet, httpPost, tg, TTL } from "../../api"
 
 const GiftsPage = lazy(() => import("../pages/Gifts/GiftsComponent.jsx"))
 const EventsPage = lazy(() => import("../pages/Events/EventsComponent.jsx"))
@@ -67,15 +68,23 @@ export default function App() {
 
     useEffect(() => {
         if (!user) {
+            init()
+            let tgInitUser = null
+
+            try {
+                const launchParams = retrieveLaunchParams()
+                tgInitUser = launchParams.initData?.user
+            } catch (e) {
+                console.warn("Telegram launch params not found", e)
+            }
+
+            const targetUser = tgInitUser || undefinedUser
+
+            loginUser(targetUser)
+
             mutate()
         }
-
-        if (tgInitUser) {
-            loginUser(tgInitUser)
-        } else {
-            loginUser(undefinedUser)
-        }
-    }, [user])
+    }, [user, mutate, loginUser, undefinedUser])
 
     useEffect(() => {
         i18n.changeLanguage(lang)
