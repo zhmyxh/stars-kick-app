@@ -67,24 +67,14 @@ export default function App() {
     })
 
     useEffect(() => {
-        if (!user) {
-            init()
-            let tgInitUser = null
+        mutate()
 
-            try {
-                const launchParams = retrieveLaunchParams()
-                tgInitUser = launchParams.initData?.user
-            } catch (e) {
-                console.warn("Telegram launch params not found", e)
-            }
-
-            const targetUser = tgInitUser || undefinedUser
-
-            loginUser(targetUser)
-
-            mutate()
+        if (tg?.initDataUnsafe?.user) {
+            loginUser(tg.initDataUnsafe.user)
+        } else {
+            loginUser(undefinedUser)
         }
-    }, [user, mutate, loginUser, undefinedUser])
+    }, [])
 
     useEffect(() => {
         i18n.changeLanguage(lang)
