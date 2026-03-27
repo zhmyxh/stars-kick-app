@@ -34,7 +34,7 @@ export default function ReferralPage() {
         }
     }
 
-    const { data: referral } = useQuery({
+    const { data: referral, isLoading: isLoadingReferral } = useQuery({
         queryKey: ['referral'],
         queryFn: fetchReferral,
         staleTime: TTL,
@@ -85,7 +85,7 @@ export default function ReferralPage() {
     }
 
     const [withdrawStatus, setWithdrawStatus] = useState(false)
-    const { balance, balanceUpdate, setBalance, addBalance } = useUserStore()
+    const { addBalance } = useUserStore()
 
     const queryClient = useQueryClient()
     const updateReferralManually = (newData) => {
@@ -131,15 +131,19 @@ export default function ReferralPage() {
                 <span className='header-text'>{t('header.referralsystem')}</span>
                 <span className="secondary-text">{t('definition.referral')}</span>
             </div>
-            <div id="referral-buttons" className="box">
-                <button className='button-main' onClick={handleShareLink}>
-                    <span>{t('button.invite')}</span>
-                </button>
-                <button className='button-secondary' onClick={handleCopyLink}>
-                    <IconLink className='icon-default' width={16} height={16} />
-                    <span>{linkCopy ? t('button.linkcopied') : t('button.copylink')}</span>
-                </button>
-            </div>
+            {isLoadingReferral ? (
+                <div className="box flex items-center justify-center" style={{ minHeight: 100 }}>
+                    <LoaderMini />
+                </div>
+            ) : (
+                <div id="referral-buttons" className="box">
+                    <Button name={t('button.invite')} type='main' wd={true} action={handleShareLink} />
+                    <button className='button-secondary' onClick={handleCopyLink} disabled={isLoadingReferral}>
+                        <IconLink className='icon-default' width={16} height={16} />
+                        <span>{linkCopy ? t('button.linkcopied') : t('button.copylink')}</span>
+                    </button>
+                </div>
+            )}
             <div id="referral-info">
                 <div id="referral-number" className="box">
                     <span className="secondary-text">{t('header.referrals')}</span>
