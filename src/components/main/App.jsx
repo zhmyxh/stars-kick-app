@@ -103,7 +103,7 @@ export default function App() {
         } else {
             loginUser(undefinedUser)
         }
-    }, [])
+    }, [user])
 
     useEffect(() => {
         i18n.changeLanguage(lang)

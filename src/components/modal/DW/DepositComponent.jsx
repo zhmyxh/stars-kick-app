@@ -57,10 +57,13 @@ const DepositList = ({ amount, setAmount }) => {
                         className={`pack-element ${check ? 'pack-selected' : ''} ${pack.status === 'status.available' ? 'pack-available' : 'pack-unavailable'}`}
                         onClick={() => handleSelectPack(pack.amount, pack.id, pack.status)}>
                         <div className='flex w-fit'>
-                            <SmartImage src='./star-pack.png' width={50} height={50} />
+                            <SmartImage src='./star-pack-deposit.png' width={60} height={50} />
                         </div>
                         <div className='flex flex-col gap-[5px] items-start'>
-                            <Score value={pack.amount} icon={<IconStar width={18} height={18} />} />
+                            <div className='flex items-center gap-[5px]'>
+                                <Score value={pack.amount} icon={<IconStar width={18} height={18} />} />
+                                {pack.quotation > 0 && <span className='secondary-text'>≈${pack.quotation}</span>}
+                            </div>
                             {pack.status === 'status.available' ? (
                                 <div className="flex items-center gap-[5px]">
                                     <IconAv className='icon-default' width={15} height={15} />
