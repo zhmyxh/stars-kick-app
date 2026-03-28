@@ -14,6 +14,7 @@ import IconRefresh from '@/assets/icons/icon-refresh.svg?react'
 import IconLock from '@/assets/icons/icon-lock.svg?react'
 import IconCancel from '@/assets/icons/event-icons/icon-cancel.svg?react'
 import IconResolved from '@/assets/icons/event-icons/icon-resolved.svg?react'
+import IconStar from '@/assets/icons/icon-star.svg?react'
 
 import Score from '@/components/utility/Score'
 import SmartImage from '@/components/utility/SmartImage'
@@ -84,11 +85,11 @@ export function Event({ event, disabled = false }) {
                     }
 
                     return (
-                        <div className='event-option' key={i}>
+                        <div className='event-option filled' key={i}>
                             <span className='secondary-text'>«{name}»</span>
-                            <div className='flex flex-col gap-[6px] items-end'>
+                            <div className='flex gap-[5px]'>
                                 <div className='event-option-total'>
-                                    <span className='header-text'>{option.percent}%</span>
+                                    <Score value={option.percent + '%'} />
                                 </div>
                             </div>
                         </div>

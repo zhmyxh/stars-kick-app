@@ -44,7 +44,7 @@ function WagerTitle({ event, handleStep, setCurrentOption }) {
         return (
             <div className="flex flex-col mb-[10px]">
                 <div id="event-wager-warning" style={{ marginBottom: 10 }}>
-                    <div style={{ display: 'flex', alignItems: 'start', gap: 10 }}>
+                    <div className='flex items-center gap-[10px]'>
                         <div style={{ width: 20, height: 20 }}>
                             <IconWarning className='icon-default' width={20} height={20} />
                         </div>
@@ -60,9 +60,9 @@ function WagerTitle({ event, handleStep, setCurrentOption }) {
 
     const WagerDate = ({ fun }) => {
         return (
-            <div className='flex items-center gap-[5px]'>
+            <div className='flex items-center gap-[6px]'>
                 <IconCalendar className={'icon-default'} width={15} height={15} />
-                <span className='secondary-text'>{fun(event.closes_at)}</span>
+                <span className='secondary-text' style={{ lineHeight: 1 }}>{fun(event.closes_at)}</span>
             </div>
         )
     }
@@ -113,7 +113,6 @@ function WagerTitle({ event, handleStep, setCurrentOption }) {
                         </div>
                     )}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                        <span className="secondary-text">{t('header.stats')}</span>
                         <div className='event-options'>
                             {event?.options && event.options.map((option, i) => {
                                 let name = ''
@@ -127,12 +126,12 @@ function WagerTitle({ event, handleStep, setCurrentOption }) {
                                 return (
                                     <div className='event-option' key={i}>
                                         <span className='secondary-text'>«{name}»</span>
-                                        <div className='flex flex-col gap-[6px] items-end'>
+                                        <div className='flex gap-[5px]'>
                                             <div className='event-option-total'>
-                                                <span className='header-text'>{option.percent}%</span>
+                                                <Score value={option.percent + '%'} filled={true} />
                                             </div>
                                             <div className='event-option-total'>
-                                                <Score value={option.option_pool} icon={<IconStar width={18} height={18} />} />
+                                                <Score value={option.option_pool} icon={<IconStar width={18} height={18} />} filled={true} />
                                             </div>
                                         </div>
                                     </div>
