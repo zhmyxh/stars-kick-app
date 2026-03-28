@@ -47,11 +47,13 @@ export const useSettingsStore = create((set, get) => ({
     modalIndex: null,
     modalClose: null,
     modalType: '',
-    toggleModal: (type, index, close) => set(state => ({
+    modalFromLink: false,
+    toggleModal: (type, index, mfl) => set(state => ({
         modalStatus: !state.modalStatus,
         modalType: type || '',
         modalIndex: index || null,
-        modalClose: true
+        modalClose: true,
+        modalFromLink: mfl || false
     })),
     editModalCloseMode: (close) => set({
         modalClose: close
@@ -64,7 +66,7 @@ export const useSettingsStore = create((set, get) => ({
         set({ lang: lang })
     },
 
-    version: '1.3.2 Alpha'
+    version: '1.3.3, Alpha'
 }))
 
 export const useUserStore = create((set, get) => ({

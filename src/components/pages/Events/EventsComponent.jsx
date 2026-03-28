@@ -127,7 +127,7 @@ const useLoadAllEvents = (lang, server) => {
                 isFetching: results.some(r => r.isFetching),
                 isSuccess: results.every(r => r.isSuccess),
                 refetchAll: () => results.forEach(r => r.refetch())
-            };
+            }
         },
     })
 }

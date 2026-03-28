@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { QueryCache, useMutation, useQuery } from "@tanstack/react-query"
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Suspense, lazy } from "react"
@@ -26,11 +26,25 @@ import Modal from "../special/Modal/ModalComponent.jsx"
 import PageLoader from "../utility/PageLoader"
 import Wager from "../modal/Wager/WagerComponent.jsx"
 
+function getEventParam(url) {
+    const params = new URL(url).searchParams;
+    const startApp = params.get('startapp')
+
+    if (startApp && startApp.startsWith('event_')) {
+        return startApp.split('_')[1]
+    }
+
+    return null
+}
+
 export default function App() {
-    const { theme, changeTheme, currentPage, setPage, modalStatus, modalType, lang } = useSettingsStore()
+    const { theme, changeTheme, currentPage, setPage, lang } = useSettingsStore()
     const { loginUser, user, setBalance, undefinedUser } = useUserStore()
+    const { modalStatus, modalIndex, modalType } = useSettingsStore()
     const { server } = useContentStore()
     const { t } = useTranslation()
+
+    const [eventFromLink, setEventFromLink] = useState(false)
 
     const fetchWallet = async () => {
         return await httpGet(server + 'wallet/balance/detailed')
@@ -61,6 +75,21 @@ export default function App() {
     useEffect(() => {
         setBalance(balance?.total_balance)
     }, [balance])
+
+    const toggleModal = useSettingsStore(state => state.toggleModal)
+
+    useEffect(() => {
+        const currentStatus = useSettingsStore.getState().modalStatus
+        const startParam = window.Telegram.WebApp.initDataUnsafe.start_param || null
+
+        if (startParam && startParam.startsWith('event_')) {
+            const eventId = Number(startParam.split('_')[1])
+            if (!currentStatus) {
+                toggleModal('wager', eventId, true)
+            }
+        }
+
+    }, [toggleModal])
 
     const { mutate } = useMutation({
         mutationFn: fetchUser,

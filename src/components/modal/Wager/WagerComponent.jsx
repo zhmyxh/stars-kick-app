@@ -198,6 +198,8 @@ function WagerBuy({ currentOption, event, setPaymentStatus, handleStep, setUpdat
     const { setBalance, balance } = useUserStore()
     const { editModalCloseMode } = useSettingsStore()
 
+    const queryClient = useQueryClient()
+
     const [amount, setAmount] = useState(0)
     const maxAmount = 500
     const amountOptions = [20, 50, 70, 100, 150, 200]
@@ -222,8 +224,6 @@ function WagerBuy({ currentOption, event, setPaymentStatus, handleStep, setUpdat
             inputRef.current.value = amount
         }
     }, [amount])
-
-    const queryClient = useQueryClient()
 
     const fetchPlaceWager = async () => {
         return await httpPost(server + 'market-wagers/wagers', {
@@ -358,7 +358,7 @@ function WagerFailed({ receipt }) {
 }
 
 export default function Wager() {
-    const { modalIndex } = useSettingsStore()
+    const { modalIndex, modalFromLink } = useSettingsStore()
     const { t } = useTranslation()
     const { server } = useContentStore()
     const { lang } = useSettingsStore()
@@ -381,6 +381,10 @@ export default function Wager() {
 
     const fetchEvent = async () => {
         return await httpGet(`${server}market-wagers/events/${modalIndex}?app_lang=${lang}`)
+    }
+
+    const fetchEventFromLink = async () => {
+        return await httpGet(`${server}market-wagers/events/${modalIndex}/full?app_lang=${lang}`)
     }
 
     useEffect(() => {
@@ -420,7 +424,21 @@ export default function Wager() {
             }
         }
 
-        load()
+        if (modalFromLink) {
+            setIsLoadingEvent(true)
+            const loadFromLink = async () => {
+                const eventFromLink = await fetchEventFromLink()
+
+                if (eventFromLink) {
+                    setCurrentEvent(eventFromLink || null)
+                    setIsLoadingEvent(false)
+                }
+            }
+
+            loadFromLink()
+        } else {
+            load()
+        }
     }, [modalIndex, queryClient, lang])
 
     useEffect(() => {
