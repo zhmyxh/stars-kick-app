@@ -7,7 +7,8 @@ import { createRoot } from 'react-dom/client'
 
 import App from './components/main/App'
 
-import { init, miniApp, viewport } from '@telegram-apps/sdk';
+import { SpeedInsights } from "@vercel/speed-insights/react"
+import { init, miniApp, viewport } from '@telegram-apps/sdk'
 
 function startApp() {
   try {
@@ -34,6 +35,7 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <App />
+      <SpeedInsights />
     </QueryClientProvider>
   </StrictMode>
 )
