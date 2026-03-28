@@ -7,12 +7,13 @@ import NotFound from '@/components/utility/NotFound'
 import Button from "@/components/utility/Button"
 import SmartImage from '@/components/utility/SmartImage'
 import { Event, EventStatus } from '../../pages/Events/EventsComponent'
+import { useSettingsStore } from '../../../store/useStore'
 
 const RuleTemplate = ({ header, component, text }) => {
     const { t } = useTranslation()
 
     return (
-        <div id="rule-box" className='mb-[135px]'>
+        <div id="rule-box" className='mb-[175px]'>
             <div id='rules-component' className='mb-[15px]'>
                 {component}
             </div>
@@ -87,6 +88,7 @@ const RuleStepC = () => {
 export default function Rules() {
     const { t } = useTranslation()
     const [currentStep, setCurrentStep] = useState(1)
+    const { toggleModal } = useSettingsStore()
 
     const steps = [1, 2, 3]
     const maxStep = steps.length
@@ -103,7 +105,8 @@ export default function Rules() {
                     ))}
                 </div>
                 {currentStep !== maxStep && <Button name={t('button.next')} type='main' color='b-g' wd={true} action={() => setCurrentStep(prev => prev + 1)} />}
-                {currentStep === maxStep && <Button name={t('button.back')} type='main' color='b-g' wd={true} action={() => setCurrentStep(1)} />}
+                {currentStep === maxStep && <Button name={t('button.close')} type='main' color='b-g' wd={true} action={() => toggleModal(false)} />}
+                <Button name={t('button.back')} type='secondary' wd={true} action={() => setCurrentStep(1)} />
             </div>
         </div>
     )
