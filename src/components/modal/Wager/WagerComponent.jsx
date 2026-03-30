@@ -1,6 +1,6 @@
 import './_wager.styles.css'
 
-import { act, useEffect, useRef, useState } from "react"
+import { act, useCallback, useEffect, useRef, useState } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Trans, useTranslation } from "react-i18next"
 
@@ -28,6 +28,182 @@ import IconLose from '@/assets/icons/play-icons/icon-lose.svg?react'
 import { Loader } from '../../special/Loader/LoaderComponent'
 import { truncate } from '@/api'
 import { EventStatus } from '../../pages/Events/EventsComponent'
+import { useEventsStore } from '../../../store/useStore'
+
+export default function Wager() {
+    const modalIndex = useSettingsStore(state => state.modal.index)
+    const isFromLink = useSettingsStore(state => state.modal.isFromLink)
+    const toggleModal = useSettingsStore(state => state.toggleModal)
+
+    const { t } = useTranslation()
+    const { server, cacheData, setCache, cacheLastUse } = useContentStore()
+    const { lang } = useSettingsStore()
+
+    const [step, setStep] = useState(1)
+    const [currentOption, setCurrentOption] = useState({})
+    const [paymentStatus, setPaymentStatus] = useState('')
+
+    const steps = ['definition.wagerstep.1', 'definition.wagerstep.2']
+
+    const [refresh, setRefresh] = useState(false)
+
+    const [updatedEvent, setUpdatedEvent] = useState(null)
+    const [currentEvent, setCurrentEvent] = useState(null)
+    const [isLoadingEvent, setIsLoadingEvent] = useState(false)
+
+    const [receipt, setReceipt] = useState(null)
+
+    const queryClient = useQueryClient()
+
+    const fetchEvent = async () => {
+        return await httpGet(`${server}market-wagers/events/${modalIndex}?app_lang=${lang}`)
+    }
+
+    const fetchEventFromLink = async () => {
+        return await httpGet(`${server}market-wagers/events/${modalIndex}/full?app_lang=${lang}`)
+    }
+
+    const load = async (isRefreshing) => {
+        if (!modalIndex) return
+        setIsLoadingEvent(true)
+
+        if (!isRefreshing) {
+            const timeFromLastCache = Date.now() - cacheLastUse
+            if (cacheData.events.length > 0 && timeFromLastCache < 15000) {
+                const eventFromCache = cacheData.events.find(e => e.event_id === modalIndex)
+                if (eventFromCache) {
+                    setCurrentEvent(eventFromCache)
+                    setIsLoadingEvent(false)
+                    return
+                }
+            }
+        }
+
+        const allQueriesData = queryClient.getQueriesData({ queryKey: ['events'], exact: false })
+
+        const currentLangEvents = allQueriesData
+            .filter(query => query[0].includes(lang))
+            .flatMap(query => query[1]?.events || [])
+
+        const eventFromCache = currentLangEvents.find(e => e.event_id === Number(modalIndex))
+
+        if (eventFromCache) {
+            const freshData = await fetchEvent()
+            setTimeout(() => {
+                const newEvent = {
+                    ...eventFromCache,
+                    ...freshData,
+                    options: (eventFromCache.options || []).map((opt, i) => ({
+                        ...opt,
+                        ...(freshData.options?.[i] || {})
+                    }))
+                }
+
+                setCurrentEvent(newEvent)
+                setCache({ event: newEvent })
+                setIsLoadingEvent(false)
+            }, 0)
+        }
+    }
+
+    const loadFromLink = async () => {
+        setIsLoadingEvent(true)
+
+        try {
+            const eventFromLink = await fetchEventFromLink()
+            setCurrentEvent(eventFromLink || null)
+        } finally {
+            setIsLoadingEvent(false)
+        }
+    }
+
+    useEffect(() => {
+        if (isFromLink) {
+            loadFromLink()
+        } else {
+            load()
+        }
+    }, [modalIndex, lang])
+
+    const modalAbleToClose = useSettingsStore(state => state.modal.ableToClose)
+
+    useEffect(() => {
+        const newValue = !isLoadingEvent
+        if (modalAbleToClose !== newValue) {
+            toggleModal({ ableToClose: newValue })
+        }
+    }, [isLoadingEvent, modalAbleToClose])
+
+    useEffect(() => {
+        setUpdatedEvent(currentEvent)
+    }, [currentEvent])
+
+    useEffect(() => {
+        if (refresh === true) {
+            setCurrentEvent(updatedEvent)
+            setRefresh(false)
+        }
+    }, [refresh])
+
+    const handleStep = (dir) => {
+        if (dir === 'back' && step > 1) setStep(prev => prev - 1)
+        if (dir === 'forward' && step < 3) setStep(prev => prev + 1)
+    }
+
+    return (
+        <div id="wager">
+            {
+                isLoadingEvent
+                    ? <Loader text={t('loader.event')} />
+                    : (() => {
+                        return (
+                            <>
+                                {step === 1 && <WagerTitle
+                                    event={currentEvent}
+                                    handleStep={handleStep}
+                                    setCurrentOption={setCurrentOption} />}
+                                {step === 2 && <WagerBuy
+                                    event={currentEvent}
+                                    handleStep={handleStep} currentOption={currentOption}
+                                    setPaymentStatus={setPaymentStatus}
+                                    setUpdatedEvent={setUpdatedEvent}
+                                    setReceipt={setReceipt}
+                                    currentEvent={currentEvent} />}
+                                {step === 3 && (
+                                    <div id="wager-status">
+                                        {paymentStatus === 'success' && <WagerSuccess receipt={receipt} />}
+                                        {paymentStatus === 'failed' && <WagerFailed receipt={receipt} />}
+                                        {paymentStatus === 'loading' && <Loader text={t('loader.payment')} />}
+                                        {paymentStatus !== 'loading' &&
+                                            <Button name={t('button.back')} type={'main'} color='b-b' wd={true}
+                                                action={() => {
+                                                    setRefresh(true)
+                                                    setStep(1)
+                                                }} />
+                                        }
+                                    </div>
+                                )}
+                                {(step !== 3 && currentEvent?.status === 'OPEN') && (
+                                    <div className="flex items-cetner gap-[15px]">
+                                        {step !== 1 && (
+                                            <div id="wager-page-buttons">
+                                                <button className="button-i" onClick={() => handleStep('back')}>
+                                                    <div style={{ transform: 'rotate(90deg)', display: 'flex' }}>
+                                                        <IconArrow className={'icon-default'} width={20} height={20} />
+                                                    </div>
+                                                </button>
+                                            </div>
+                                        )}
+                                        <span className="secondary-text"><b>{t('header.step')} {step}.</b> {t(steps[step - 1])}</span>
+                                    </div>
+                                )}
+                            </>
+                        )
+                    })()
+            }
+        </div>
+    )
+}
 
 function WagerTitle({ event, handleStep, setCurrentOption }) {
     const { wagerWarning, cancelWagerWarning } = useUserStore()
@@ -44,7 +220,7 @@ function WagerTitle({ event, handleStep, setCurrentOption }) {
         return (
             <div className="flex flex-col mb-[10px]">
                 <div id="event-wager-warning" style={{ marginBottom: 10 }}>
-                    <div className='flex items-center gap-[10px]'>
+                    <div className='flex items-start gap-[10px]'>
                         <div style={{ width: 20, height: 20 }}>
                             <IconWarning className='icon-default' width={20} height={20} />
                         </div>
@@ -112,7 +288,7 @@ function WagerTitle({ event, handleStep, setCurrentOption }) {
                             </div>
                         </div>
                     )}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                    <div className='flex flex-col gap-[15px] mt-[10px]'>
                         <div className='event-options'>
                             {event?.options && event.options.map((option, i) => {
                                 let name = ''
@@ -352,163 +528,6 @@ function WagerFailed({ receipt }) {
                 <span className="secondary-text">{t('header.paymentstatus')}</span>
                 <span className="header-text">{t('header.failed')}</span>
             </div>
-        </div>
-    )
-}
-
-export default function Wager() {
-    const { modalIndex, modalFromLink } = useSettingsStore()
-    const { t } = useTranslation()
-    const { server } = useContentStore()
-    const { lang } = useSettingsStore()
-
-    const [step, setStep] = useState(1)
-    const [currentOption, setCurrentOption] = useState({})
-    const [paymentStatus, setPaymentStatus] = useState('')
-
-    const steps = ['definition.wagerstep.1', 'definition.wagerstep.2']
-
-    const [refresh, setRefresh] = useState(false)
-
-    const [updatedEvent, setUpdatedEvent] = useState(null)
-    const [currentEvent, setCurrentEvent] = useState(null)
-    const [isLoadingEvent, setIsLoadingEvent] = useState(false)
-
-    const [receipt, setReceipt] = useState(null)
-
-    const queryClient = useQueryClient()
-
-    const fetchEvent = async () => {
-        return await httpGet(`${server}market-wagers/events/${modalIndex}?app_lang=${lang}`)
-    }
-
-    const fetchEventFromLink = async () => {
-        return await httpGet(`${server}market-wagers/events/${modalIndex}/full?app_lang=${lang}`)
-    }
-
-    useEffect(() => {
-        const load = async () => {
-            if (!modalIndex) return
-
-            setIsLoadingEvent(true)
-
-            try {
-                const allQueriesData = queryClient.getQueriesData({
-                    queryKey: ['events'],
-                    exact: false
-                })
-
-                const currentLangEvents = allQueriesData
-                    .filter(query => query[0].includes(lang))
-                    .flatMap(query => query[1]?.events || [])
-
-                const eventFromCache = currentLangEvents.find(e => e.event_id === Number(modalIndex))
-
-                if (eventFromCache) {
-                    const freshData = await fetchEvent()
-
-                    setCurrentEvent({
-                        ...eventFromCache,
-                        ...freshData,
-                        options: (eventFromCache.options || []).map((opt, i) => ({
-                            ...opt,
-                            ...(freshData.options?.[i] || {})
-                        }))
-                    })
-                }
-            } catch (error) {
-                console.error('Error updating event:', error)
-            } finally {
-                setIsLoadingEvent(false)
-            }
-        }
-
-        if (modalFromLink) {
-            setIsLoadingEvent(true)
-            const loadFromLink = async () => {
-                const eventFromLink = await fetchEventFromLink()
-
-                if (eventFromLink) {
-                    setCurrentEvent(eventFromLink || null)
-                    setIsLoadingEvent(false)
-                }
-            }
-
-            loadFromLink()
-        } else {
-            load()
-        }
-    }, [modalIndex, queryClient, lang])
-
-    useEffect(() => {
-        setUpdatedEvent(currentEvent)
-    }, [currentEvent])
-
-    useEffect(() => {
-        if (refresh === true) {
-            setCurrentEvent(updatedEvent)
-            setRefresh(false)
-        }
-    }, [refresh])
-
-    const handleStep = (dir) => {
-        if (dir === 'back' && step > 1) setStep(prev => prev - 1)
-        if (dir === 'forward' && step < 3) setStep(prev => prev + 1)
-    }
-
-    return (
-        <div id="wager">
-            {
-                isLoadingEvent
-                    ? <Loader text={t('loader.event')} />
-                    : (() => {
-                        return (
-                            <>
-                                {step === 1 && <WagerTitle
-                                    event={currentEvent}
-                                    handleStep={handleStep}
-                                    setCurrentOption={setCurrentOption} />}
-                                {step === 2 && <WagerBuy
-                                    event={currentEvent}
-                                    handleStep={handleStep} currentOption={currentOption}
-                                    setPaymentStatus={setPaymentStatus}
-                                    setUpdatedEvent={setUpdatedEvent}
-                                    setReceipt={setReceipt}
-                                    currentEvent={currentEvent} />}
-                                {step === 3 && (
-                                    <div id="wager-status">
-                                        {paymentStatus === 'success' && <WagerSuccess receipt={receipt} />}
-                                        {paymentStatus === 'failed' && <WagerFailed receipt={receipt} />}
-                                        {paymentStatus === 'loading' && <Loader text={t('loader.payment')} />}
-                                        {paymentStatus !== 'loading' &&
-                                            <Button name={t('button.back')} type={'main'} color='b-b' wd={true}
-                                                action={() => {
-                                                    setRefresh(true)
-                                                    setStep(1)
-                                                }} />
-                                        }
-                                    </div>
-                                )}
-                                {(step !== 3 && currentEvent?.status === 'OPEN') && (
-                                    <div className="flex items-cetner gap-[15px]">
-                                        {step !== 1 && (
-                                            <div id="wager-page-buttons">
-                                                <button className="button-i" onClick={() => handleStep('back')}>
-                                                    <div style={{ transform: 'rotate(90deg)', display: 'flex' }}>
-                                                        <IconArrow className={'icon-default'} width={20} height={20} />
-                                                    </div>
-                                                </button>
-                                            </div>
-                                        )}
-                                        <span className="secondary-text"><b>{t('header.step')} {step}.</b> {t(steps[step - 1])}</span>
-                                    </div>
-                                )}
-                            </>
-                        )
-
-                    })()
-            }
-
         </div>
     )
 }

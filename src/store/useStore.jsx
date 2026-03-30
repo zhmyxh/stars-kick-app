@@ -1,3 +1,4 @@
+import { miniAppState } from "@telegram-apps/sdk"
 import { create } from "zustand"
 
 const getInitialTheme = () => {
@@ -43,20 +44,22 @@ export const useSettingsStore = create((set, get) => ({
         currentPage: page
     }),
 
-    modalStatus: false,
-    modalIndex: null,
-    modalClose: null,
-    modalType: '',
-    modalFromLink: false,
-    toggleModal: (type, index, mfl) => set(state => ({
-        modalStatus: !state.modalStatus,
-        modalType: type || '',
-        modalIndex: index || null,
-        modalClose: true,
-        modalFromLink: mfl || false
-    })),
-    editModalCloseMode: (close) => set({
-        modalClose: close
+    modal: {
+        status: false,
+        index: null,
+        type: '',
+        isFromLink: false,
+        ableToClose: true,
+    },
+    toggleModal: (updates) => set(state => {
+        const newModal = { ...state.modal, ...updates }
+        const hasChanges = Object.keys(newModal).some(
+            key => state.modal[key] !== newModal[key]
+        )
+
+        if (!hasChanges) return state
+
+        return { modal: newModal }
     }),
 
     langList: ['en', 'ru'],
@@ -112,6 +115,24 @@ export const useUserStore = create((set, get) => ({
 }))
 
 export const useContentStore = create((set, get) => ({
+    cacheData: {
+        events: []
+    },
+    cacheLastUse: 0,
+    setCache: (data) => set(state => {
+        const newEvent = data.event
+        const isExist = state.cacheData.events.some(e => e.event_id === newEvent.event_id)
+
+        return {
+            cacheData: {
+                events: isExist
+                    ? state.cacheData.events.map(e => e.event_id === newEvent.event_id ? newEvent : e)
+                    : [...state.cacheData.events, newEvent]
+            },
+            cacheLastUse: Date.now()
+        }
+    }),
+
     depositPack: [
         { id: 1142, amount: 1, status: 'status.available', quotation: 0, mark: 'mark.test' },
         { id: 5432, amount: 50, status: 'status.available', quotation: 0.78, mark: null },
