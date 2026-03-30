@@ -104,9 +104,11 @@ export default function Rules() {
                         <div key={i} className={`dot ${currentStep === s && 'active'}`}></div>
                     ))}
                 </div>
-                {currentStep !== maxStep && <Button name={t('button.next')} type='main' color='b-g' wd={true} action={() => setCurrentStep(prev => prev + 1)} />}
-                {currentStep === maxStep && <Button name={t('button.close')} type='main' color='b-g' wd={true} action={() => toggleModal(false)} />}
-                <Button name={t('button.back')} type='secondary' wd={true} action={() => setCurrentStep(1)} />
+                <div className='flex flex-col gap-[15px]'>
+                    {currentStep !== maxStep && <Button name={t('button.next')} type='main' color='b-g' wd={true} action={() => setCurrentStep(prev => prev + 1)} />}
+                    {currentStep === maxStep && <Button name={t('button.close')} type='main' color='b-g' wd={true} action={() => toggleModal()} />}
+                    <Button name={t('button.back')} type='secondary' wd={true} action={() => setCurrentStep(1)} />
+                </div>
             </div>
         </div>
     )

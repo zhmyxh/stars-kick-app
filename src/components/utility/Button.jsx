@@ -2,7 +2,7 @@ import { useEffect } from "react"
 import { useTranslation } from "react-i18next"
 import SmartImage from "./SmartImage"
 
-function Button({ name, icon, color, type, action, wd, size, image, disback }) {
+function Button({ name, icon, color, type, action, wd, size, image, disback, isDisabled }) {
     const { t } = useTranslation()
     let textClass = ''
 
@@ -20,7 +20,7 @@ function Button({ name, icon, color, type, action, wd, size, image, disback }) {
                 width: wd ? '100%' : 'fit-content', height: image ? 'auto' : '', paddingBlock: image ? 15 : 0,
                 background: disback && 'none'
             }}
-            onClick={action}>
+            onClick={action} disabled={isDisabled}>
             {icon && icon}
             {name && <span className={textClass} style={{ fontSize: size ? size : 16 }}>{name}</span>}
             {image && <SmartImage src={image} width={60} height={60} />}

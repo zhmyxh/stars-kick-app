@@ -38,9 +38,8 @@ function getEventParam(url) {
 }
 
 export default function App() {
-    const { theme, changeTheme, currentPage, setPage, lang } = useSettingsStore()
+    const { theme, changeTheme, currentPage, setPage, lang, modal } = useSettingsStore()
     const { loginUser, user, setBalance, undefinedUser } = useUserStore()
-    const { modalStatus, modalIndex, modalType } = useSettingsStore()
     const { server } = useContentStore()
     const { t } = useTranslation()
 
@@ -79,13 +78,13 @@ export default function App() {
     const toggleModal = useSettingsStore(state => state.toggleModal)
 
     useEffect(() => {
-        const currentStatus = useSettingsStore.getState().modalStatus
+        const currentStatus = useSettingsStore.getState().modal.status
         const startParam = window.Telegram.WebApp.initDataUnsafe.start_param || null
 
         if (startParam && startParam.startsWith('event_')) {
             const eventId = Number(startParam.split('_')[1])
             if (!currentStatus) {
-                toggleModal('wager', eventId, true)
+                toggleModal({ status: true, type: 'wager', index: eventId, isFromLink: true })
             }
         }
 
@@ -115,15 +114,15 @@ export default function App() {
 
     return (
         <div id="app">
-            {modalStatus && (
-                <Modal header={t(`header.${modalType}`)}>
+            {modal.status && (
+                <Modal header={t(`header.${modal.type}`)}>
                     <Suspense fallback={<PageLoader />}>
-                        {modalType === 'deposit' && <Deposit />}
-                        {modalType === 'withdraw' && <Withdraw />}
-                        {modalType === 'rules' && <Rules />}
-                        {modalType === 'wager' && <Wager />}
+                        {modal.type === 'deposit' && <Deposit />}
+                        {modal.type === 'withdraw' && <Withdraw />}
+                        {modal.type === 'rules' && <Rules />}
+                        {modal.type === 'wager' && <Wager />}
                     </Suspense>
-                    {modalType === 'settings' && <Settings />}
+                    {modal.type === 'settings' && <Settings />}
                 </Modal>
             )}
             <Panel />

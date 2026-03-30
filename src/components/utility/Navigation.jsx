@@ -23,10 +23,10 @@ function Navigation() {
 
     return (
         <div id="navigation">
-            {pages.map(p => {
+            {pages.map((p, i) => {
                 const Icon = p.icon
                 return (
-                    <div className={`navigation-button ${currentPage === p.id ? 'selected' : ''}`} onClick={() => goToPage(p.id)}>
+                    <div key={i} className={`navigation-button ${currentPage === p.id ? 'selected' : ''}`} onClick={() => goToPage(p.id)}>
                         <Icon className='icon-default' width={22} height={22} />
                         <span className='default-text'>{t(p.name)}</span>
                     </div>

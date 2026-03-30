@@ -9,11 +9,14 @@ import IconWithdraw from '@/assets/icons/icon-export.svg?react'
 import IconRules from '@/assets/icons/icon-rules.svg?react'
 
 import SmartImage from '@/components/utility/SmartImage'
+import { Loader } from '../../special/Loader/LoaderComponent'
 
 export default function ProfilePage() {
     const { toggleModal } = useSettingsStore()
     const { balance, user } = useUserStore()
     const { t } = useTranslation()
+
+    if (!user) return <Loader />
 
     return (
         <div id="profile" className="app-page">
@@ -31,11 +34,11 @@ export default function ProfilePage() {
                 <span className='secondary-text'>{t('definition.balance')}</span>
                 <div className='empty'></div>
                 <div id='profile-depwith'>
-                    <button className="button-main b-g" onClick={() => toggleModal('deposit')}>
+                    <button className="button-main b-g" onClick={() => toggleModal({ status: true, type: 'deposit' })}>
                         <IconDeposit className='icon-invert' width={20} height={20} />
                         <span className="white-text">{t('button.deposit')}</span>
                     </button>
-                    <button className="button-main b-b" onClick={() => toggleModal('withdraw')}>
+                    <button className="button-main b-b" onClick={() => toggleModal({ status: true, type: 'withdraw' })}>
                         <IconWithdraw className='icon-invert' width={20} height={20} />
                         <span className="white-text">{t('button.withdraw')}</span>
                     </button>
@@ -46,11 +49,11 @@ export default function ProfilePage() {
                 <span className='header-text'>{t('header.info')}</span>
                 <span className='secondary-text'>{t('definition.info')}</span>
                 <div className='empty'></div>
-                <button className="button-main" onClick={() => toggleModal('rules')}>
+                <button className="button-main" onClick={() => toggleModal({ status: true, type: 'rules' })}>
                     <IconRules className='icon-default' width={20} height={20} />
                     <span className="default-text">{t('button.rules')}</span>
                 </button>
-                <button className="button-main" onClick={() => toggleModal('settings')}>
+                <button className="button-main" onClick={() => toggleModal({ status: true, type: 'settings' })}>
                     <IconSettings className='icon-default' width={20} height={20} />
                     <span className="default-text">{t('button.settings')}</span>
                 </button>

@@ -1,12 +1,15 @@
 import './Modal.styles.css'
 
 import IconClose from '@/assets/icons/icon-close.svg?react'
+import IconRefresh from '@/assets/icons/icon-refresh.svg?react'
 import { useSettingsStore } from '@/store/useStore'
 import NotFound from '@/components/utility/NotFound'
 import { useEffect, useRef, useState } from 'react'
 
 function Modal({ header, children }) {
-    const { toggleModal, modalClose } = useSettingsStore()
+    const ableToClose = useSettingsStore(state => state.modal.ableToClose)
+    const toggleModal = useSettingsStore(state => state.toggleModal)
+
     const [opened, setOpened] = useState(false)
     const [height, setHeight] = useState(0)
     const contentRef = useRef(null)
@@ -23,7 +26,8 @@ function Modal({ header, children }) {
         const element = contentRef.current
 
         const observer = new ResizeObserver(() => {
-            setHeight(element.scrollHeight + 25)
+            const newHeight = element.scrollHeight + 25
+            setHeight(prev => prev !== newHeight ? newHeight : prev)
         })
 
         observer.observe(element)
@@ -33,11 +37,11 @@ function Modal({ header, children }) {
     }, [])
 
     const handleModal = () => {
-        if (!modalClose) return
+        if (!ableToClose) return
 
         setOpened(false)
         setTimeout(() => {
-            if (opened) toggleModal()
+            toggleModal({ status: false })
         }, 300)
     }
 
@@ -46,10 +50,12 @@ function Modal({ header, children }) {
             <div id="modal" className={opened ? "modal-open" : ""} onClick={(e) => e.stopPropagation()}>
                 <div id="modal-header">
                     <span className="default-text" style={{ fontWeight: 'bold', fontSize: 20 }}>{header}</span>
-                    {modalClose && (
-                        <button className="button-i" onClick={handleModal}>
-                            <IconClose className='icon-default' width={20} height={20} />
-                        </button>
+                    {ableToClose && (
+                        <div className="flex items-center gap-[10px]">
+                            <button className="button-i" onClick={handleModal}>
+                                <IconClose className='icon-default' width={20} height={20} />
+                            </button>
+                        </div>
                     )}
                 </div>
                 <div id="modal-content" style={{ overflowY: opened ? 'auto' : 'hidden', height: height, transition: "height 0.3s ease" }}>
