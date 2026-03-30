@@ -3,6 +3,8 @@ import './_events.styles.css'
 import { useTranslation } from 'react-i18next'
 import { useEffect, useState } from 'react'
 import { useQueries, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useInfiniteQuery } from '@tanstack/react-query'
+import { useInView } from 'react-intersection-observer'
 
 import { useContentStore, useSettingsStore } from '@/store/useStore'
 
@@ -56,7 +58,7 @@ export function Event({ event, disabled = false }) {
     return (
         <div className='event-box box' onClick={() => {
             if (!disabled) {
-                toggleModal('wager', event.event_id)
+                toggleModal({ status: true, type: 'wager', index: event.event_id })
             }
         }
         }>
@@ -105,31 +107,19 @@ export function Event({ event, disabled = false }) {
     )
 }
 
-const useLoadAllEvents = (lang, server) => {
-    return useQueries({
-        queries: [
-            {
-                queryKey: ['events', 'active', lang],
-                queryFn: () => httpGet(`${server}market-wagers/events/active?app_lang=${lang}`),
-                staleTime: TTL,
-            },
-            {
-                queryKey: ['events', 'resolved', lang],
-                queryFn: () => httpGet(`${server}market-wagers/events/resolved?app_lang=${lang}`),
-                staleTime: TTL,
-            },
-        ],
-        combine: (results) => {
-            const active = results[0].data?.events || []
-            const resolved = results[1].data?.events || []
-            return {
-                allEvents: [...active, ...resolved],
-                isLoading: results.some(r => r.isLoading),
-                isFetching: results.some(r => r.isFetching),
-                isSuccess: results.every(r => r.isSuccess),
-                refetchAll: () => results.forEach(r => r.refetch())
-            }
+const useEventsInfinite = (lang, server, filter) => {
+    return useInfiniteQuery({
+        queryKey: ['events', filter, lang],
+        queryFn: async ({ pageParam = null }) => {
+            const cursor = pageParam ? encodeURIComponent(pageParam) : ''
+            const url = `${server}market-wagers/events/${filter}?app_lang=${lang}&limit=5&cursor=${cursor}`
+            return httpGet(url)
         },
+        initialPageParam: null,
+        getNextPageParam: (lastPage) => {
+            return lastPage.next_cursor || undefined
+        },
+        staleTime: 30000,
     })
 }
 
@@ -138,75 +128,99 @@ export default function EventsPage() {
     const { server } = useContentStore()
     const [filter, setFilter] = useState('active')
     const { lang } = useSettingsStore()
-    const { setEvents, active, resolved, activeCount, resolvedCount, eventsRefreshSeconds, setRefreshSeconds } = useEventsStore()
+    const { eventsRefreshSeconds, setRefreshSeconds } = useEventsStore() // Убрали лишнее
 
-    const COOLDOWN_SEC = 10
-    const [secondsLeft, setSecondsLeft] = useState(0)
-    const canRefresh = eventsRefreshSeconds === 0
+    const {
+        data,
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage,
+        isLoading,
+        isSuccess,
+        refetch
+    } = useEventsInfinite(lang, server, filter)
 
-    const { allEvents, isSuccess, isFetching, isLoading, refetchAll } = useLoadAllEvents(lang, server)
+    const { ref, inView } = useInView({
+        threshold: 0,
+        rootMargin: '200px',
+    })
 
     useEffect(() => {
-        if (isSuccess && !isFetching && allEvents.length > 0) {
-            setEvents([...allEvents])
+        if (inView && hasNextPage && !isFetchingNextPage) {
+            fetchNextPage()
         }
-    }, [allEvents, isSuccess, isFetching, lang, setEvents])
+    }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage])
 
-    useEffect(() => {
-        if (eventsRefreshSeconds <= 0) return
-
-        const timer = setInterval(() => {
-            setRefreshSeconds(eventsRefreshSeconds - 1)
-        }, 1000)
-
-        return () => clearInterval(timer)
-    }, [eventsRefreshSeconds])
+    const currentEvents = data?.pages.flatMap(page => page.events) || []
 
     const handleRefresh = () => {
-        if (canRefresh && !isFetching) {
-            setRefreshSeconds(COOLDOWN_SEC)
-            refetchAll()
+        if (eventsRefreshSeconds === 0 && !isFetchingNextPage) {
+            setRefreshSeconds(10)
+            refetch()
         }
     }
 
     return (
         <div id='events' className='app-page'>
             <div id='event-navigation'>
-                {isLoading ? <LoaderMini /> : (
-                    <div id='events-filters'>
-                        <button className='button-alter'
-                            style={{ background: filter !== 'active' && 'none' }}
-                            onClick={() => { if (isSuccess) setFilter('active') }}>
-                            {isLoading ? <LoaderMini /> : <span className='secondary-text'>{t('filter.active')} ({activeCount})</span>}
-                        </button>
-                        <button className='button-alter'
-                            style={{ background: filter !== 'resolved' && 'none' }}
-                            onClick={() => { if (isSuccess) setFilter('resolved') }}>
-                            {isLoading ? <LoaderMini /> : <span className='secondary-text'>{t('filter.resolved')}</span>}
-                        </button>
-                        <button className='button-alter'
-                            style={{ width: eventsRefreshSeconds !== 0 ? 90 : 'auto' }}
-                            onClick={handleRefresh} disabled={!canRefresh || isFetching}>
-                            <IconRefresh className='icon-default' width={18} height={18} />
-                            {eventsRefreshSeconds !== 0 && <span className='secondary-text'>{eventsRefreshSeconds}{t('status.sec')}</span>}
-                        </button>
-                    </div>
+                <div id='events-filters'>
+                    <button className='button-alter'
+                        style={{ background: filter !== 'active' ? 'none' : undefined }}
+                        onClick={() => setFilter('active')}>
+                        <span className='secondary-text'>
+                            {t('filter.active')}
+                        </span>
+                    </button>
+                    <button className='button-alter'
+                        style={{ background: filter !== 'resolved' ? 'none' : undefined }}
+                        onClick={() => setFilter('resolved')}>
+                        <span className='secondary-text'>{t('filter.resolved')}</span>
+                    </button>
+
+                    <button className='button-alter'
+                        style={{ width: eventsRefreshSeconds !== 0 ? 90 : 'auto' }}
+                        onClick={handleRefresh}
+                        disabled={eventsRefreshSeconds !== 0 || isFetchingNextPage}>
+                        <IconRefresh className='icon-default' width={18} height={18} />
+                        {eventsRefreshSeconds !== 0 && (
+                            <span className='secondary-text'>
+                                {eventsRefreshSeconds}{t('status.sec')}
+                            </span>
+                        )}
+                    </button>
+                </div>
+            </div>
+
+            <div id='events-list'>
+                {isLoading ? (
+                    <Loader text={t('loader.events')} />
+                ) : currentEvents.length > 0 ? (
+                    <>
+                        {currentEvents.map((event, i) => (
+                            <Event event={event} key={event.id || i} />
+                        ))}
+
+                        <div
+                            ref={ref}
+                            style={{
+                                height: '1px',
+                                marginTop: '-1px',
+                                opacity: 0,
+                                pointerEvents: 'none'
+                            }}
+                        />
+
+                        {isFetchingNextPage && (
+                            <div style={{ display: 'flex', justifyContent: 'center', padding: '15px' }}>
+                                <LoaderMini />
+                            </div>
+                        )}
+                    </>
+                ) : (
+                    <NotFound />
                 )}
             </div>
-            <div id='events-list'>
-                {
-                    isLoading || isFetching
-                        ? <Loader text={t('loader.events')} />
-                        : allEvents?.length
-                            ? (<>
-                                {filter === 'active' && active.map((event, i) => <Event event={event} key={i} />)}
-                                {filter === 'resolved' && resolved.map((event, i) => <Event event={event} key={i} />)}
-                            </>
 
-                            )
-                            : <NotFound />
-                }
-            </div>
         </div>
     )
 }
