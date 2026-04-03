@@ -125,16 +125,6 @@
     width: 100%;
 }
 
-#event-info-box {
-    display: flex;
-    gap: 15px;
-    position: sticky;
-    top: 0;
-    padding-bottom: 15px;
-    background-color: var(--default-back);
-    z-index: 2;
-}
-
 #event-stats,
 #event-user-wagers {
     display: grid;

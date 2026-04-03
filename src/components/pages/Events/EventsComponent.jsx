@@ -1,7 +1,7 @@
 import './_events.styles.css'
 
 import { useTranslation } from 'react-i18next'
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { useQueries, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { useInView } from 'react-intersection-observer'
@@ -17,6 +17,7 @@ import IconLock from '@/assets/icons/icon-lock.svg?react'
 import IconCancel from '@/assets/icons/event-icons/icon-cancel.svg?react'
 import IconResolved from '@/assets/icons/event-icons/icon-resolved.svg?react'
 import IconStar from '@/assets/icons/icon-star.svg?react'
+import IconTON from '@/assets/icons/icon-TON.svg?react'
 
 import Score from '@/components/utility/Score'
 import SmartImage from '@/components/utility/SmartImage'
@@ -51,6 +52,23 @@ export const EventStatus = ({ event }) => {
     return event.status !== 'OPEN' && <Score value={t(statusName)} icon={statusIcon} filled={true} size={14} />
 }
 
+export const EventName = ({ name }) => {
+    return (
+        <span className='header-text'>
+            {name.split('TON').map((part, index, array) => (
+                <Fragment key={index}>
+                    {part}
+                    {index < array.length - 1 && (
+                        <div className='inline-block align-middle h-[1em] mr-1 mb-[3px]'>
+                            <IconTON width={17} height={17} />
+                        </div>
+                    )}
+                </Fragment>
+            ))}
+        </span>
+    )
+}
+
 export function Event({ event, disabled = false }) {
     const { toggleModal } = useSettingsStore()
     const { t } = useTranslation()
@@ -69,7 +87,7 @@ export function Event({ event, disabled = false }) {
                     </div>
                 )}
                 <div className='event-info'>
-                    <span className='header-text'>{event.question}</span>
+                    <EventName name={event.question} />
                     <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
                         <IconCalendar className={'icon-default'} width={15} height={15} />
                         <span className='secondary-text'>{utcFormat(event.closes_at)}</span>
@@ -99,7 +117,7 @@ export function Event({ event, disabled = false }) {
                 })}
             </div>
             <div id='event-pool'>
-                <Score value={event.total_pool} icon={<IconAlterStar className='icon-default' width={16} height={16} />} filled={true} size={14} />
+                <Score value={event.total_pool} icon={<IconStar width={16} height={16} />} filled={true} size={14} />
                 <Score value={event.total_participants} icon={<IconUsers className='icon-default' width={16} height={16} />} filled={true} size={14} />
                 <EventStatus event={event} />
             </div>
@@ -128,7 +146,7 @@ export default function EventsPage() {
     const { server } = useContentStore()
     const [filter, setFilter] = useState('active')
     const { lang } = useSettingsStore()
-    const { eventsRefreshSeconds, setRefreshSeconds } = useEventsStore() // Убрали лишнее
+    const { eventsRefreshSeconds, setRefreshSeconds } = useEventsStore()
 
     const {
         data,
@@ -153,12 +171,35 @@ export default function EventsPage() {
 
     const currentEvents = data?.pages.flatMap(page => page.events) || []
 
+    const queryClient = useQueryClient();
+
     const handleRefresh = () => {
-        if (eventsRefreshSeconds === 0 && !isFetchingNextPage) {
-            setRefreshSeconds(10)
-            refetch()
+        const isInProgress = isLoading || isFetchingNextPage;
+
+        if (eventsRefreshSeconds === 0 && !isInProgress) {
+            setRefreshSeconds(10); // Запускаем таймер в сторе
+
+            // Полный сброс текущего кэша (вызовет основной isLoading)
+            queryClient.resetQueries({
+                queryKey: ['events', filter, lang],
+                exact: true
+            });
         }
-    }
+    };
+
+
+    useEffect(() => {
+        // Если таймер на нуле, ничего не делаем
+        if (eventsRefreshSeconds <= 0) return;
+
+        // Запускаем интервал на 1 секунду
+        const timer = setInterval(() => {
+            setRefreshSeconds(eventsRefreshSeconds - 1);
+        }, 1000);
+
+        // Обязательно очищаем интервал при размонтировании или изменении стейта
+        return () => clearInterval(timer);
+    }, [eventsRefreshSeconds, setRefreshSeconds]);
 
     return (
         <div id='events' className='app-page'>
