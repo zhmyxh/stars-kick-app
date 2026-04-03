@@ -105,7 +105,7 @@ const DepositPending = ({ setStatus, amount, setAmount }) => {
     const { server } = useContentStore()
     const { depositPack, depositFee } = useContentStore()
     const { t } = useTranslation()
-    const { editModalCloseMode } = useSettingsStore()
+    const { toggleModal } = useSettingsStore()
 
     const [ableToDep, setAbleToDep] = useState(false)
 
@@ -142,15 +142,18 @@ const DepositPending = ({ setStatus, amount, setAmount }) => {
     const { mutate, isLoading } = useMutation({
         mutationFn: fetchDepositPayment,
         onMutate: () => {
-            editModalCloseMode(false)
+            toggleModal({ ableToClose: false })
             setStatus({ key: 'loading' })
         },
         onSuccess: (data) => {
-            editModalCloseMode(true)
+            toggleModal({ ableToClose: true })
             setStatus({ key: 'confirming' })
             if (data) openInvoice(data.invoice_link)
         },
-        onError: (err) => setStatus({ key: 'error', text: err })
+        onError: (err) => {
+            toggleModal({ ableToClose: true })
+            setStatus({ key: 'error' })
+        }
     })
 
     const handleDeposit = () => {
@@ -192,15 +195,15 @@ const DepositPending = ({ setStatus, amount, setAmount }) => {
 
 const DepositStatus = ({ status, setStatus, amount, setAmount }) => {
     const { t } = useTranslation()
-    const { editModalCloseMode } = useSettingsStore()
+    const { toggleModal } = useSettingsStore()
 
     const defaultClass = 'flex flex-col items-center justify-center gap-[25px]'
 
     useEffect(() => {
         if (status.key === 'confirming') {
-            editModalCloseMode(false)
+            toggleModal({ ableToClose: false })
         } else {
-            editModalCloseMode(true)
+            toggleModal({ ableToClose: true })
         }
     }, [status])
 

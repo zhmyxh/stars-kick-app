@@ -69,7 +69,7 @@ export const useSettingsStore = create((set, get) => ({
         set({ lang: lang })
     },
 
-    version: '1.3.3, Alpha'
+    version: '1.3.7 Alpha'
 }))
 
 export const useUserStore = create((set, get) => ({
@@ -149,17 +149,17 @@ export const useContentStore = create((set, get) => ({
     depositMin: 25,
 
     withdrawPack: [
-        { "id": 4829, "amount": 50, "status": "status.available", "quotation": 0.78, "mark": null },
-        { "id": 1053, "amount": 200, "status": "status.available", "quotation": 3.14, "mark": "mark.best" },
-        { "id": 8274, "amount": 350, "status": "status.available", "quotation": 5.49, "mark": null },
-        { "id": 3391, "amount": 500, "status": "status.available", "quotation": 7.85, "mark": null },
-        { "id": 6102, "amount": 750, "status": "status.available", "quotation": 11.77, "mark": null },
-        { "id": 9485, "amount": 1000, "status": "status.available", "quotation": 15.69, "mark": null },
-        { "id": 2716, "amount": 2500, "status": "status.available", "quotation": 39.23, "mark": null },
-        { "id": 5540, "amount": 5000, "status": "status.unavailable", "quotation": 78.45, "mark": null },
-        { "id": 8832, "amount": 10000, "status": "status.unavailable", "quotation": 160.0, "mark": null }
+        { id: 4829, amount: 60, status: 'status.available', quotation: 0, mark: 'mark.test' },
+        { id: 5529, amount: 200, status: 'status.available', quotation: 3.14, mark: null },
+        { id: 8274, amount: 350, status: 'status.available', quotation: 5.49, mark: 'mark.best' },
+        { id: 3391, amount: 500, status: 'status.available', quotation: 7.85, mark: null },
+        { id: 6102, amount: 750, status: 'status.available', quotation: 11.77, mark: null },
+        { id: 9485, amount: 1000, status: 'status.available', quotation: 15.69, mark: null },
+        { id: 2716, amount: 2500, status: 'status.available', quotation: 39.23, mark: null },
+        { id: 5540, amount: 5000, status: 'status.unavailable', quotation: 78.45, mark: null },
+        { id: 8832, amount: 10000, status: 'status.unavailable', quotation: 160.0, mark: null }
     ],
-    withdrawFee: 0,
+    withdrawFee: 0.15,
     withdrawMin: 50,
 
     server: 'https://starskick-back.vercel.app/api/',

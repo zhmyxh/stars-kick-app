@@ -87,6 +87,11 @@ const WithdrawList = ({ amount, setAmount }) => {
                                 <span className='white-text' style={{ fontSize: 12 }}>{t(pack.mark)}</span>
                             </div>
                         )}
+                        {pack.mark === 'mark.test' && (
+                            <div id='pack-test' className='pack-mark'>
+                                <span className='white-text' style={{ fontSize: 12 }}>{t(pack.mark)}</span>
+                            </div>
+                        )}
                     </div>
                 )
             })}
@@ -99,9 +104,10 @@ const WithdrawPending = ({ setStatus, amount, setAmount }) => {
     const { server } = useContentStore()
     const { withdrawPack, withdrawFee } = useContentStore()
     const { t } = useTranslation()
-    const { editModalCloseMode } = useSettingsStore()
+    const { toggleModal } = useSettingsStore()
 
     const [ableToWith, setAbleToWith] = useState(false)
+    const [clear, setClear] = useState(0)
 
     const queryClient = useQueryClient()
 
@@ -112,16 +118,19 @@ const WithdrawPending = ({ setStatus, amount, setAmount }) => {
     const { mutate, isLoading } = useMutation({
         mutationFn: fetchWithdrawPayment,
         onMutate: () => {
-            editModalCloseMode(false)
+            toggleModal({ ableToClose: false })
             setStatus({ key: 'loading' })
         },
         onSuccess: () => {
-            editModalCloseMode(true)
+            toggleModal({ ableToClose: true })
             addBalance(-amount)
             queryClient.invalidateQueries({ queryKey: ['wallet'] })
             setStatus({ key: 'success' })
         },
-        onError: (err) => setStatus({ key: 'error' })
+        onError: (err) => {
+            toggleModal({ ableToClose: true })
+            setStatus({ key: 'error' })
+        }
     })
 
     const handleWithdraw = () => {
@@ -131,6 +140,7 @@ const WithdrawPending = ({ setStatus, amount, setAmount }) => {
     const wallet = queryClient.getQueryData(['wallet'])
 
     useEffect(() => {
+        setClear(Number(Math.round(amount * (1 - withdrawFee))))
         if (wallet) setAbleToWith(wallet.withdrawable_balance >= amount && amount > 0)
     }, [amount, wallet])
 
@@ -151,7 +161,7 @@ const WithdrawPending = ({ setStatus, amount, setAmount }) => {
                 </div>
                 <div className='withdraw-info-box'>
                     <span className='secondary-text'>{t('header.fee')}</span>
-                    <Score value={withdrawFee + '%'} filled={true} />
+                    <Score value={(withdrawFee * 100) + '%'} filled={true} />
                 </div>
             </div>
             <WithdrawList amount={amount} setAmount={setAmount} />
@@ -186,7 +196,7 @@ const WithdrawStatus = ({ status, setStatus, amount, setAmount }) => {
                     </div>
                 )}
 
-                {status.key === 'failed' && (
+                {status.key === 'failed' || status.key === 'error' && (
                     <div className={defaultClass}>
                         <IconLose width={50} height={50} />
                         <div className="flex flex-col gap-[5px] items-center">
