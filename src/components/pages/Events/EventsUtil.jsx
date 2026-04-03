@@ -1,13 +1,15 @@
 import { useInfiniteQuery } from "@tanstack/react-query"
 import { Fragment } from "react"
+import { useTranslation } from "react-i18next"
 
 import IconLock from '@/assets/icons/icon-lock.svg?react'
 import IconCancel from '@/assets/icons/event-icons/icon-cancel.svg?react'
 import IconResolved from '@/assets/icons/event-icons/icon-resolved.svg?react'
 import IconStar from '@/assets/icons/icon-star.svg?react'
 import IconTON from '@/assets/icons/icon-TON.svg?react'
-import { useTranslation } from "react-i18next"
+
 import Score from "../../utility/Score"
+import { truncate } from "../../../api"
 
 export const EventStatus = ({ event }) => {
     const { t } = useTranslation()
@@ -50,18 +52,18 @@ export const EventName = ({ name }) => {
     )
 }
 
-export const useEventsInfinite = (lang, server, filter) => {
-    return useInfiniteQuery({
-        queryKey: ['events', filter, lang],
-        queryFn: async ({ pageParam = null }) => {
-            const cursor = pageParam ? encodeURIComponent(pageParam) : ''
-            const url = `${server}market-wagers/events/${filter}?app_lang=${lang}&limit=5&cursor=${cursor}`
-            return httpGet(url)
-        },
-        initialPageParam: null,
-        getNextPageParam: (lastPage) => {
-            return lastPage.next_cursor || undefined
-        },
-        staleTime: 30000,
-    })
+export const EventOptionName = ({ name }) => {
+    const { t } = useTranslation()
+
+    let formatName = ''
+
+    if (name === 'Yes' || name === 'No') {
+        formatName = t('option.' + name.toLowerCase())
+    } else {
+        formatName = truncate(name)
+    }
+
+    return (
+        <span className='secondary-text'>«{formatName}»</span>
+    )
 }

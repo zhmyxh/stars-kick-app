@@ -16,6 +16,8 @@ import Button from "@/components/utility/Button"
 import IconRefresh from '@/assets/icons/icon-refresh.svg?react'
 import IconStar from '@/assets/icons/icon-star.svg?react'
 import IconArrow from '@/assets/icons/icon-arrow.svg?react'
+import IconArrowTop from '@/assets/icons/arrow-icons/icon-arrow-top.svg?react'
+import IconArrowBottom from '@/assets/icons/arrow-icons/icon-arrow-bottom.svg?react'
 import IconUsers from '@/assets/icons/icon-users.svg?react'
 import IconAdd from '@/assets/icons/icon-add.svg?react'
 import IconMinus from '@/assets/icons/icon-minus.svg?react'
@@ -25,9 +27,10 @@ import IconProfile from '@/assets/icons/icon-profile.svg?react'
 import IconAlterStar from '@/assets/icons/icon-alter-star.svg?react'
 import IconWin from '@/assets/icons/play-icons/icon-win.svg?react'
 import IconLose from '@/assets/icons/play-icons/icon-lose.svg?react'
+import IconResolved from '@/assets/icons/event-icons/icon-resolved.svg?react'
 
 import { Loader, LoaderMini } from '@/components/special/Loader/LoaderComponent'
-import { EventName, EventStatus } from '../EventsUtil'
+import { EventName, EventOptionName, EventStatus } from '../EventsUtil'
 
 export default function Wager() {
     const modalIndex = useSettingsStore(state => state.modal.index)
@@ -246,16 +249,6 @@ function WagerTitle({ event, handleStep, setCurrentOption }) {
         )
     }
 
-    const YesNoQuestion = event.options.find(option => option.name.includes('Yes') || option.name.includes('Да')) || false
-
-    const questionName = (name) => {
-        if (YesNoQuestion) {
-            return t('option.' + name.toLowerCase())
-        } else {
-            return name
-        }
-    }
-
     const WagerDate = ({ fun }) => {
         return (
             <div className='flex items-center gap-[6px]'>
@@ -263,6 +256,17 @@ function WagerTitle({ event, handleStep, setCurrentOption }) {
                 <span className='secondary-text' style={{ lineHeight: 1 }}>{fun(event.closes_at)}</span>
             </div>
         )
+    }
+
+    const calculatePercents = (data) => {
+        const totalWager = data.reduce((sum, obj) => sum + obj.user_wager, 0);
+
+        return data.map(obj => ({
+            ...obj,
+            user_percent: totalWager > 0
+                ? (obj.user_wager / totalWager) * 100
+                : 0
+        }))
     }
 
     return (
@@ -285,21 +289,22 @@ function WagerTitle({ event, handleStep, setCurrentOption }) {
                                     <EventStatus event={event} />
                                 </div>
                             )}
-
                         </div>
                     </div>
                     {event.status === 'OPEN' && (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                        <div className='flex flex-col gap-[10px]'>
                             <span className="secondary-text">{t('header.placeabet')}</span>
                             <WagerWarning />
                             <div id="event-actions">
-                                {event?.options && event.options.map((option, i) => {
+                                {event.options.map((option, i) => {
                                     let buttonColor = null
-                                    if (YesNoQuestion) {
+                                    const yesOrNo = option.name === 'Yes' || option.name === 'No'
+                                    if (yesOrNo) {
                                         buttonColor = (i === 0 ? 'b-g' : 'b-r')
                                     } else buttonColor = 'b-b'
 
-                                    return <Button name={option.name}
+                                    return <Button
+                                        name={yesOrNo ? t('option.' + option.name.toLowerCase()) : option.name}
                                         type={'main'}
                                         color={buttonColor} wd={true}
                                         action={() => selectOption(option)}
@@ -309,53 +314,68 @@ function WagerTitle({ event, handleStep, setCurrentOption }) {
                             </div>
                         </div>
                     )}
-                    <div className='flex flex-col gap-[15px] mt-[10px]'>
+                    <div className='flex flex-col gap-[20px] p-[5px]'>
                         <div className='event-options'>
-                            {event.options && event.options.map((option, i) => (
-                                <div className='event-option' key={i}>
-                                    <span className='secondary-text'>«{questionName(option.name)}»</span>
-                                    <div className='flex gap-[5px]'>
-                                        <div className='event-option-total'>
-                                            <Score value={option.percent + '%'} filled={true} />
-                                        </div>
-                                        <div className='event-option-total'>
-                                            <Score value={option.option_pool} icon={<IconStar width={18} height={18} />} filled={true} />
+                            {event.options && event.options.map((option, i) => {
+                                const win = event.winning_option === option.option_id
+
+                                return (
+                                    <div className='event-option' key={i}>
+                                        <EventOptionName name={option.name} />
+                                        <div className='flex gap-[5px]'>
+                                            {win && (
+                                                <div className='event-option-total mx-[5px]'>
+                                                    <IconResolved className={'icon-default'} width={18} height={18} />
+                                                </div>
+                                            )}
+                                            <div className='event-option-total'>
+                                                <Score value={option.percent + '%'} filled={true} />
+                                            </div>
+                                            <div className='event-option-total'>
+                                                <Score value={option.option_pool} icon={<IconStar width={18} height={18} />} filled={true} />
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            ))}
+                                )
+                            })}
                         </div>
                         <div id="event-stats">
                             <div className="event-stat-box">
                                 <span className="secondary-text">{t('header.totalpool')}</span>
-                                <Score value={event.total_pool} icon={<IconStar width={18} height={18} />} />
+                                <Score value={event.total_pool} icon={<IconStar width={18} height={18} />} filled />
                             </div>
                             <div className="event-stat-box">
                                 <span className="secondary-text">{t('header.participants')}</span>
-                                <Score value={event.total_participants} icon={<IconUsers className='icon-default' width={18} height={18} />} />
+                                <Score value={event.total_participants} icon={<IconUsers className='icon-default' width={18} height={18} />} filled />
                             </div>
                         </div>
                     </div>
-                    <div className='flex flex-col gap-[10px]'>
-                        {event.does_user_participate && (
-                            <div id="event-user-info">
-                                <div id='event-own-wagers-list'>
-                                    <div className='flex items-center justify-center w-full py-[5px]'>
-                                        <span className="secondary-text">{t('header.yourwagers')}</span>
-                                    </div>
-                                    {event.options.map((option, i) => (
-                                        <div className='event-own-wager' key={i}>
-                                            <span className='default-text'>«{questionName(option.name)}»</span>
-                                            <div className='flex items-center gap-[10px]'>
-                                                <Score value={option.user_wager || 0} icon={<IconStar width={18} height={18} />} />
-                                                <span className='secondary-text'>({option.percent}%)</span>
+                    {event.does_user_participate && (
+                        <div id="event-user-info">
+                            <span className="secondary-text">{t('header.yourwagers')}</span>
+                            <div id='event-own-wagers-list'>
+                                {(() => {
+                                    const totalWager = event.options.reduce((sum, opt) => sum + (opt.user_wager || 0), 0)
+
+                                    return event.options.map((option, i) => {
+                                        const percent = totalWager > 0
+                                            ? ((option.user_wager || 0) / totalWager * 100).toFixed(1)
+                                            : 0
+
+                                        return (
+                                            <div className='event-own-wager' key={i}>
+                                                <EventOptionName name={option.name} />
+                                                <div className='flex items-center gap-[10px]'>
+                                                    <Score value={option.user_wager || 0} icon={<IconStar width={18} height={18} />} />
+                                                    <span className='secondary-text'>({percent}%)</span>
+                                                </div>
                                             </div>
-                                        </div>
-                                    ))}
-                                </div>
+                                        )
+                                    })
+                                })()}
                             </div>
-                        )}
-                    </div>
+                        </div>
+                    )}
                 </div>
             ) : <NotFound />}
         </div>

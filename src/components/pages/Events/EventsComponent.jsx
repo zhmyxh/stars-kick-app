@@ -26,12 +26,13 @@ import NotFound from "@/components/utility/NotFound"
 import { httpGet, TTL, utcFormat } from '@/api'
 import { Loader, LoaderMini } from '../../special/Loader/LoaderComponent'
 import { useEventsStore } from '../../../store/useStore'
-import { truncate, useEventsFromCache } from '../../../api'
-import { EventName, EventStatus } from './EventsUtil'
+import { EventName, EventOptionName, EventStatus } from './EventsUtil'
 
 export function Event({ event, disabled = false }) {
     const { toggleModal } = useSettingsStore()
     const { t } = useTranslation()
+
+    const isResult = event.status === 'RESOLVED'
 
     return (
         <div className='event-box box' onClick={() => {
@@ -40,7 +41,7 @@ export function Event({ event, disabled = false }) {
             }
         }
         }>
-            <div style={{ display: 'flex', gap: 15 }}>
+            <div className='flex gap-[15px]'>
                 {event.image_payload && (
                     <div id='event-image'>
                         <SmartImage src={event.image_payload} alt='Event icon' width={80} height={80} />
@@ -49,27 +50,26 @@ export function Event({ event, disabled = false }) {
                 <div className='event-info'>
                     <EventName name={event.question} />
                     <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-                        <IconCalendar className={'icon-default'} width={15} height={15} />
+                        <IconCalendar className='icon-default' width={15} height={15} />
                         <span className='secondary-text'>{utcFormat(event.closes_at)}</span>
                     </div>
                 </div>
             </div>
             <div className='event-options'>
-                {event?.options && event.options.map((option, i) => {
-                    let name = ''
-
-                    if (option.name === 'Yes' || option.name === 'No') {
-                        name = t('option.' + option.name.toLowerCase())
-                    } else {
-                        name = truncate(option.name)
-                    }
+                {event.options && event.options.map((option, i) => {
+                    const win = event.winning_option === option.option_id
 
                     return (
-                        <div className='event-option filled' key={i}>
-                            <span className='secondary-text'>«{name}»</span>
+                        <div className={`event-option filled ${win ? 'win' : ''}`} key={i}>
+                            <EventOptionName name={option.name} />
                             <div className='flex gap-[5px]'>
+                                {win && (
+                                    <div className="winning_option">
+                                        <IconResolved className={'icon-default'} width={16} height={16} />
+                                    </div>
+                                )}
                                 <div className='event-option-total'>
-                                    <Score value={option.percent + '%'} />
+                                    <span className='header-text' style={{ fontWeight: 'bold' }}>{option.percent + '%'}</span>
                                 </div>
                             </div>
                         </div>
