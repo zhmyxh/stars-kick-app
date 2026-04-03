@@ -24,7 +24,7 @@ function Panel() {
 
     return (
         <div id="panel">
-            <button className="button-main b-g" onClick={() => toggleModal('deposit')}>
+            <button className="button-main b-g" onClick={() => toggleModal({ status: true, type: 'deposit' })}>
                 <IconDeposit className='icon-invert' width={20} height={20} />
                 <span className="white-text">{t('button.deposit')}</span>
             </button>

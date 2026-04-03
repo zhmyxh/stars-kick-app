@@ -5,7 +5,7 @@ function NotFound() {
     const { t } = useTranslation()
 
     return (
-        <div className='error-message'>
+        <div className='error-message' style={{ height: 140 }}>
             <IconNotFound className='icon-default' width={24} height={24} />
             <span className="secondary-text">{t('definition.notfound')}</span>
         </div>
