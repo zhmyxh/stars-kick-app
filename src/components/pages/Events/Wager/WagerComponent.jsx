@@ -26,10 +26,8 @@ import IconAlterStar from '@/assets/icons/icon-alter-star.svg?react'
 import IconWin from '@/assets/icons/play-icons/icon-win.svg?react'
 import IconLose from '@/assets/icons/play-icons/icon-lose.svg?react'
 
-import { Loader, LoaderMini } from '../../special/Loader/LoaderComponent'
-import { truncate } from '@/api'
-import { EventName, EventStatus } from '../../pages/Events/EventsComponent'
-import { useEventsStore } from '../../../store/useStore'
+import { Loader, LoaderMini } from '@/components/special/Loader/LoaderComponent'
+import { EventName, EventStatus } from '../EventsUtil'
 
 export default function Wager() {
     const modalIndex = useSettingsStore(state => state.modal.index)

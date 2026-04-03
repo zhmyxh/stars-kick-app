@@ -27,47 +27,7 @@ import { httpGet, TTL, utcFormat } from '@/api'
 import { Loader, LoaderMini } from '../../special/Loader/LoaderComponent'
 import { useEventsStore } from '../../../store/useStore'
 import { truncate, useEventsFromCache } from '../../../api'
-
-export const EventStatus = ({ event }) => {
-    const { t } = useTranslation()
-
-    let statusIcon = null
-    let statusName = 'status.' + event.status.toLowerCase()
-
-    switch (event.status) {
-        case 'LOCKED':
-            statusIcon = <IconLock className={'icon-default'} width={16} height={16} />
-            break
-
-        case 'RESOLVED':
-            statusIcon = <IconResolved className={'icon-default'} width={16} height={16} />
-            break
-
-        case 'CANCELLED':
-            statusIcon = <IconCancel className={'icon-default'} width={16} height={16} />
-            break
-    }
-
-
-    return event.status !== 'OPEN' && <Score value={t(statusName)} icon={statusIcon} filled={true} size={14} />
-}
-
-export const EventName = ({ name }) => {
-    return (
-        <span className='header-text'>
-            {name.split('TON').map((part, index, array) => (
-                <Fragment key={index}>
-                    {part}
-                    {index < array.length - 1 && (
-                        <div className='inline-block align-middle h-[1em] mr-1 mb-[3px]'>
-                            <IconTON width={17} height={17} />
-                        </div>
-                    )}
-                </Fragment>
-            ))}
-        </span>
-    )
-}
+import { EventName, EventStatus } from './EventsUtil'
 
 export function Event({ event, disabled = false }) {
     const { toggleModal } = useSettingsStore()
@@ -171,34 +131,28 @@ export default function EventsPage() {
 
     const currentEvents = data?.pages.flatMap(page => page.events) || []
 
-    const queryClient = useQueryClient();
+    const queryClient = useQueryClient()
 
     const handleRefresh = () => {
         const isInProgress = isLoading || isFetchingNextPage;
 
         if (eventsRefreshSeconds === 0 && !isInProgress) {
-            setRefreshSeconds(10); // Запускаем таймер в сторе
-
-            // Полный сброс текущего кэша (вызовет основной isLoading)
+            setRefreshSeconds(10)
             queryClient.resetQueries({
                 queryKey: ['events', filter, lang],
                 exact: true
             });
         }
-    };
-
+    }
 
     useEffect(() => {
-        // Если таймер на нуле, ничего не делаем
-        if (eventsRefreshSeconds <= 0) return;
+        if (eventsRefreshSeconds <= 0) return
 
-        // Запускаем интервал на 1 секунду
         const timer = setInterval(() => {
-            setRefreshSeconds(eventsRefreshSeconds - 1);
-        }, 1000);
+            setRefreshSeconds(eventsRefreshSeconds - 1)
+        }, 1000)
 
-        // Обязательно очищаем интервал при размонтировании или изменении стейта
-        return () => clearInterval(timer);
+        return () => clearInterval(timer)
     }, [eventsRefreshSeconds, setRefreshSeconds]);
 
     return (

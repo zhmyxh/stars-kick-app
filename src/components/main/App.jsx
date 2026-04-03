@@ -24,7 +24,7 @@ import Panel from "../utility/Panel"
 import Navigation from "../utility/Navigation"
 import Modal from "../special/Modal/ModalComponent.jsx"
 import PageLoader from "../utility/PageLoader"
-import Wager from "../modal/Wager/WagerComponent.jsx"
+import Wager from "../pages/Events/Wager/WagerComponent.jsx"
 
 function getEventParam(url) {
     const params = new URL(url).searchParams;
