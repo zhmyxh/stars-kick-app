@@ -17,6 +17,7 @@ import Button from "@/components/utility/Button"
 import { httpGet, httpPost, tg, TTL } from '@/api'
 import { useUserStore } from '../../../store/useStore'
 import { LoaderMini } from '../../special/Loader/LoaderComponent'
+import SmartImage from '@/components/utility/SmartImage'
 
 export default function ReferralPage() {
     const { server } = useContentStore()
@@ -128,6 +129,9 @@ export default function ReferralPage() {
     return (
         <div id="referral" className="app-page">
             <div id="referral-title" className="box">
+                <div id='referral-banner'>
+                    <SmartImage src='./referrals-banner.png' width={340} height={30} />
+                </div>
                 <span className='header-text'>{t('header.referralsystem')}</span>
                 <span className="secondary-text">{t('definition.referral')}</span>
             </div>
