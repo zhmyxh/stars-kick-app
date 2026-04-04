@@ -27,6 +27,7 @@ import { httpGet, TTL, utcFormat } from '@/api'
 import { Loader, LoaderMini } from '../../special/Loader/LoaderComponent'
 import { useEventsStore } from '../../../store/useStore'
 import { EventName, EventOptionName, EventStatus } from './EventsUtil'
+import { formatNumber } from '../../../modules'
 
 export function Event({ event, disabled = false }) {
     const { toggleModal } = useSettingsStore()
@@ -77,7 +78,7 @@ export function Event({ event, disabled = false }) {
                 })}
             </div>
             <div id='event-pool'>
-                <Score value={event.total_pool} icon={<IconStar width={16} height={16} />} filled={true} size={14} />
+                <Score value={formatNumber(event.total_pool)} icon={<IconStar width={16} height={16} />} filled={true} size={14} />
                 <Score value={event.total_participants} icon={<IconUsers className='icon-default' width={16} height={16} />} filled={true} size={14} />
                 <EventStatus event={event} />
             </div>

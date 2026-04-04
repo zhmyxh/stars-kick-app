@@ -41,6 +41,7 @@
     flex-direction: column;
     gap: 10px;
     border-radius: 10px;
+    transition: 0s;
 }
 
 .event-option-total {

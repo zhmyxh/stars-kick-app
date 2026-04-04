@@ -8,7 +8,7 @@
 #event-box {
     display: flex;
     flex-direction: column;
-    gap: 35px;
+    gap: 15px;
 }
 
 #event-box,
@@ -216,4 +216,22 @@
     padding: 20px 10px;
     backdrop-filter: blur(5px);
     background-color: var(--default-back-tr);
+}
+
+#event-gifts-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    align-items: start;
+    gap: 10px;
+}
+
+.event-gift {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    background-color: var(--hover-back);
+    padding: 14px 16px;
+    border-radius: 10px;
 }

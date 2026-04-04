@@ -18,6 +18,9 @@ import IconStar from '@/assets/icons/icon-star.svg?react'
 import IconArrow from '@/assets/icons/icon-arrow.svg?react'
 import IconArrowTop from '@/assets/icons/arrow-icons/icon-arrow-top.svg?react'
 import IconArrowBottom from '@/assets/icons/arrow-icons/icon-arrow-bottom.svg?react'
+import IconGrowth from '@/assets/icons/arrow-icons/icon-growth.svg?react'
+import IconFall from '@/assets/icons/arrow-icons/icon-fall.svg?react'
+import IconTON from '@/assets/icons/icon-TON.svg?react'
 import IconUsers from '@/assets/icons/icon-users.svg?react'
 import IconAdd from '@/assets/icons/icon-add.svg?react'
 import IconMinus from '@/assets/icons/icon-minus.svg?react'
@@ -31,6 +34,7 @@ import IconResolved from '@/assets/icons/event-icons/icon-resolved.svg?react'
 
 import { Loader, LoaderMini } from '@/components/special/Loader/LoaderComponent'
 import { EventName, EventOptionName, EventStatus } from '../EventsUtil'
+import { formatNumber } from '../../../../modules'
 
 export default function Wager() {
     const modalIndex = useSettingsStore(state => state.modal.index)
@@ -222,7 +226,6 @@ export default function Wager() {
 
 function WagerTitle({ event, handleStep, setCurrentOption }) {
     const { wagerWarning, cancelWagerWarning } = useUserStore()
-    const { user } = useUserStore()
     const { t } = useTranslation()
 
     const selectOption = (option) => {
@@ -258,16 +261,10 @@ function WagerTitle({ event, handleStep, setCurrentOption }) {
         )
     }
 
-    const calculatePercents = (data) => {
-        const totalWager = data.reduce((sum, obj) => sum + obj.user_wager, 0);
-
-        return data.map(obj => ({
-            ...obj,
-            user_percent: totalWager > 0
-                ? (obj.user_wager / totalWager) * 100
-                : 0
-        }))
-    }
+    // const winning_option = event.options.find(o => o.winning_option)
+    // const lost_pool = event.total_pool - winning_option.option_pool
+    // const remaining_pool = 0.95 * lost_pool
+    // const payout = Math.round((winning_option.user_wager / winning_option.option_pool) * remaining_pool)
 
     return (
         <div id="wager-title">
@@ -291,91 +288,134 @@ function WagerTitle({ event, handleStep, setCurrentOption }) {
                             )}
                         </div>
                     </div>
-                    {event.status === 'OPEN' && (
-                        <div className='flex flex-col gap-[10px]'>
-                            <span className="secondary-text">{t('header.placeabet')}</span>
-                            <WagerWarning />
-                            <div id="event-actions">
-                                {event.options.map((option, i) => {
-                                    let buttonColor = null
-                                    const yesOrNo = option.name === 'Yes' || option.name === 'No'
-                                    if (yesOrNo) {
-                                        buttonColor = (i === 0 ? 'b-g' : 'b-r')
-                                    } else buttonColor = 'b-b'
+                    <div className='flex flex-col gap-[35px]'>
+                        {event.status === 'OPEN' && (
+                            <div className='flex flex-col gap-[10px]'>
+                                <span className="secondary-text">{t('header.placeabet')}</span>
+                                <WagerWarning />
+                                <div id="event-actions">
+                                    {event.options.map((option, i) => {
+                                        let buttonColor = null
+                                        const yesOrNo = option.name === 'Yes' || option.name === 'No'
+                                        if (yesOrNo) {
+                                            buttonColor = (i === 0 ? 'b-g' : 'b-r')
+                                        } else buttonColor = 'b-b'
 
-                                    return <Button
-                                        name={yesOrNo ? t('option.' + option.name.toLowerCase()) : option.name}
-                                        type={'main'}
-                                        color={buttonColor} wd={true}
-                                        action={() => selectOption(option)}
-                                        image={option.image_payload}
-                                        key={i} />
-                                })}
+                                        return <Button
+                                            name={yesOrNo ? t('option.' + option.name.toLowerCase()) : option.name}
+                                            type={'main'}
+                                            color={buttonColor} wd={true}
+                                            action={() => selectOption(option)}
+                                            image={option.image_payload}
+                                            key={i} />
+                                    })}
+                                </div>
                             </div>
-                        </div>
-                    )}
-                    <div className='flex flex-col gap-[20px] p-[5px]'>
-                        <div className='event-options'>
-                            {event.options && event.options.map((option, i) => {
-                                const win = event.winning_option === option.option_id
-
-                                return (
-                                    <div className='event-option' key={i}>
-                                        <EventOptionName name={option.name} />
-                                        <div className='flex gap-[5px]'>
-                                            {win && (
-                                                <div className='event-option-total mx-[5px]'>
-                                                    <IconResolved className={'icon-default'} width={18} height={18} />
+                        )}
+                        <div className='flex flex-col gap-[20px] p-[5px]'>
+                            <div className='event-options'>
+                                {event.options && event.options.map((option, i) => {
+                                    const win = event.winning_option === option.option_id
+                                    return (
+                                        <div className='event-option' key={i}>
+                                            <EventOptionName name={option.name} />
+                                            <div className='flex gap-[5px]'>
+                                                {win && (
+                                                    <div className='event-option-total mx-[5px]'>
+                                                        <IconResolved className={'icon-default'} width={18} height={18} />
+                                                    </div>
+                                                )}
+                                                <div className='event-option-total'>
+                                                    <Score value={option.percent + '%'} filled={true} />
                                                 </div>
-                                            )}
-                                            <div className='event-option-total'>
-                                                <Score value={option.percent + '%'} filled={true} />
-                                            </div>
-                                            <div className='event-option-total'>
-                                                <Score value={option.option_pool} icon={<IconStar width={18} height={18} />} filled={true} />
+                                                <div className='event-option-total'>
+                                                    <Score value={formatNumber(option.option_pool)} icon={<IconStar width={18} height={18} />} filled={true} />
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                )
-                            })}
-                        </div>
-                        <div id="event-stats">
-                            <div className="event-stat-box">
-                                <span className="secondary-text">{t('header.totalpool')}</span>
-                                <Score value={event.total_pool} icon={<IconStar width={18} height={18} />} filled />
+                                    )
+                                })}
                             </div>
-                            <div className="event-stat-box">
-                                <span className="secondary-text">{t('header.participants')}</span>
-                                <Score value={event.total_participants} icon={<IconUsers className='icon-default' width={18} height={18} />} filled />
+                            <div id="event-stats">
+                                <div className="event-stat-box">
+                                    <span className="secondary-text">{t('header.totalpool')}</span>
+                                    <Score value={formatNumber(event.total_pool)} icon={<IconStar width={18} height={18} />} filled />
+                                </div>
+                                <div className="event-stat-box">
+                                    <span className="secondary-text">{t('header.participants')}</span>
+                                    <Score value={event.total_participants} icon={<IconUsers className='icon-default' width={18} height={18} />} filled />
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    {event.does_user_participate && (
-                        <div id="event-user-info">
-                            <span className="secondary-text">{t('header.yourwagers')}</span>
-                            <div id='event-own-wagers-list'>
-                                {(() => {
-                                    const totalWager = event.options.reduce((sum, opt) => sum + (opt.user_wager || 0), 0)
+                        {event.stats && (
+                            <div className='flex flex-col gap-[10px]'>
+                                <span className="secondary-text">{t('header.giftscontain')}</span>
+                                <div id='event-gifts-list'>
+                                    {event.stats.map((g, i) => {
+                                        const PERIODS = { change_24h: 'header.change24h', change_3d: 'header.change3d', change_7d: 'header.change7d' }
+                                        const activeKey = Object.keys(PERIODS).find(key => g[key])
 
-                                    return event.options.map((option, i) => {
-                                        const percent = totalWager > 0
-                                            ? ((option.user_wager || 0) / totalWager * 100).toFixed(1)
-                                            : 0
+                                        const term = PERIODS[activeKey] || ''
+                                        const status = g[activeKey] > 0
+                                        const value = g[activeKey]
+
+                                        const GiftStat = () => (
+                                            value && (
+                                                <div className='flex items-center gap-[5px]'>
+                                                    {status ? <IconGrowth width={14} height={14} /> : <IconFall width={14} height={14} />}
+                                                    <span className='secondary-text'>{`${value > 0 ? '+' : ''}${value}`}%</span>
+                                                </div>
+                                            )
+                                        )
 
                                         return (
-                                            <div className='event-own-wager' key={i}>
-                                                <EventOptionName name={option.name} />
-                                                <div className='flex items-center gap-[10px]'>
-                                                    <Score value={option.user_wager || 0} icon={<IconStar width={18} height={18} />} />
-                                                    <span className='secondary-text'>({percent}%)</span>
+                                            <div className="event-gift" key={i}>
+                                                <div className='flex flex-col items-center justify-center gap-[7px]'>
+                                                    <div>
+                                                        <SmartImage src={g.image_payload} width={60} height={60} />
+                                                    </div>
+                                                    <span className='secondary-text'>{g.gift_name}</span>
+                                                </div>
+                                                <div className='flex flex-col gap-[10px]'>
+                                                    <Score value={g.floor} icon={<IconTON width={18} height={18} />} />
+                                                    <div className='flex flex-col gap-[5px]'>
+                                                        <span className='secondary-text'>{t(term)}:</span>
+                                                        <GiftStat />
+                                                    </div>
                                                 </div>
                                             </div>
                                         )
-                                    })
-                                })()}
+                                    })}
+                                </div>
                             </div>
-                        </div>
-                    )}
+                        )}
+                        {event.does_user_participate && (
+                            <div id="event-user-info">
+                                <span className="secondary-text">{t('header.yourwagers')}</span>
+                                <div id='event-own-wagers-list'>
+                                    {(() => {
+                                        const totalWager = event.options.reduce((sum, opt) => sum + (opt.user_wager || 0), 0)
+
+                                        return event.options.map((option, i) => {
+                                            const percent = totalWager > 0
+                                                ? ((option.user_wager || 0) / totalWager * 100).toFixed(1)
+                                                : 0
+
+                                            return (
+                                                <div className='event-own-wager' key={i}>
+                                                    <EventOptionName name={option.name} />
+                                                    <div className='flex items-center gap-[10px]'>
+                                                        <Score value={option.user_wager || 0} icon={<IconStar width={18} height={18} />} />
+                                                        <span className='secondary-text'>({percent}%)</span>
+                                                    </div>
+                                                </div>
+                                            )
+                                        })
+                                    })()}
+                                </div>
+                            </div>
+                        )}
+                    </div>
                 </div>
             ) : <NotFound />}
         </div>
@@ -439,6 +479,7 @@ function WagerBuy({ currentOption, event, setPaymentStatus, handleStep, setUpdat
                     ...prev,
                     total_pool: updatedEvent.total_pool,
                     total_participants: updatedEvent.total_participants,
+                    does_user_participate: true,
                     options: prev.options.map(oldOption => {
                         const freshData = updatedEvent.options.find(newOpt => newOpt.option_id === oldOption.option_id)
                         return freshData ? { ...oldOption, ...freshData } : oldOption
@@ -482,7 +523,7 @@ function WagerBuy({ currentOption, event, setPaymentStatus, handleStep, setUpdat
                     <Score value={currentOption.option_pool} icon={<IconAlterStar className='icon-default' width={18} height={18} />} />
                 </div>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <div className='flex flex-col gap-[5px]'>
                 <span className="secondary-text">{t('header.amount')}</span>
                 <div id="wager-bet-amount">
                     <IconStar width={34} height={34} />
